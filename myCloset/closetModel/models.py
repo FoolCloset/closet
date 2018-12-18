@@ -25,6 +25,7 @@ class Clothes(models.Model):
     note = models.TextField(max_length=100, null=True, blank=True)
     season = models.CharField(max_length=20, null=True, blank=True, default='summer')
     pattern = models.CharField(max_length=20, default='pure')
+    photo = models.URLField(default='http://120.76.62.132:8080/photos/40padded.jpg')
     # class Meta:
     #     unique_together=("id", "user")
 
