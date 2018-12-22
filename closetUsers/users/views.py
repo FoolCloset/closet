@@ -15,6 +15,8 @@ from rest_framework import permissions
 
 
 # Create your views here.
+# to do: 这个前缀具体发布的时候记得去掉
+# 用户注册
 @csrf_exempt
 def sign_up(request):
 
@@ -80,6 +82,7 @@ def sign_up(request):
         return JsonResponse(data={"msg": "创建成功，登录？"}, status=status.HTTP_200_OK)
 
 
+# 用户登录
 @csrf_exempt
 def sign_in(request):
 
@@ -101,6 +104,7 @@ def sign_in(request):
             return JsonResponse(data={"msg": "用户或密码错误"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 用户登出
 @csrf_exempt
 def sign_out(request):
 
@@ -109,6 +113,7 @@ def sign_out(request):
         return JsonResponse(data={"msg": "登出成功"}, status=status.HTTP_200_OK)
 
 
+# 用户注销
 @csrf_exempt
 def sign_off(request):
 
@@ -132,6 +137,7 @@ def sign_off(request):
         return JsonResponse(data={"msg": "用户不存在"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 返回用户的个人信息总列表或带有查询参数的列表
 # user list shows the list of all user or the user in the search field
 class UserInfoList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -140,12 +146,14 @@ class UserInfoList(generics.ListAPIView):
     filter_fields = ('username', 'phone', 'email')
 
 
+# 返回具体某个用户的个人信息
 # UserDetail returns the information of user which id matches request para id
 class UserInfoDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserInfoSerializer
 
 
+# 返回用户的相关信息，目前为用户的衣物列表【总】
 # user list shows the list of all user or the user in the search field
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -154,12 +162,14 @@ class UserList(generics.ListAPIView):
     filter_fields = ('username', 'id')
 
 
+# 返回某个用户的相关信息，目前为衣物列表
 # UserDetail returns the information of user which id matches request para id
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
+# 返回衣物的总的列表或创建某个衣物
 # ClothesList returns a type or all clothes info of one user
 class ClothesList(generics.ListCreateAPIView):
     queryset = Clothes.objects.all()
@@ -173,6 +183,7 @@ class ClothesList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
+# 返回、修改或删除某件衣物的具体信息
 # get specific clothes info, identified by id
 class ClothesDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Clothes.objects.all()
