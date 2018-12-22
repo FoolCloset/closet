@@ -5,6 +5,7 @@ from .models import User
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Custom permission to only allow owners of an object to edit it.
+    user属性需要在model内有相关声明
     """
 
     def has_object_permission(self, request, view, obj):

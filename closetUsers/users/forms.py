@@ -3,6 +3,7 @@ from django import forms
 from .models import User
 
 
+# 由于重写了auth 的User类，需要重写UserCreationForm 和 UserChangeForm两个表格
 class RegisterForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
