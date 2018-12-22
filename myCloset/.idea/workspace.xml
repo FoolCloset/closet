@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="001a73c8-8b17-404a-aabc-06ded6f8f2ac" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/closetModel/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/closetModel/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/closetModel/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/closetModel/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/closetModel/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/myCloset/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/myCloset/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/myCloset/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/myCloset/urls.py" afterDir="false" />
-    </list>
+    <list default="true" id="001a73c8-8b17-404a-aabc-06ded6f8f2ac" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,8 +78,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/myCloset/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="42" lean-forward="true" selection-start-line="21" selection-start-column="42" selection-end-line="21" selection-end-column="42" />
+            <state relative-caret-position="180">
+              <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
               <folding>
                 <element signature="e#632#664#0" expanded="true" />
               </folding>
@@ -243,12 +236,12 @@
       <updated>1545134059259</updated>
       <workItem from="1545134060731" duration="782000" />
       <workItem from="1545135885600" duration="143000" />
-      <workItem from="1545214147604" duration="393000" />
+      <workItem from="1545214147604" duration="594000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1318000" />
+    <option name="totallyTimeSpent" value="1519000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="302" y="23" width="1440" height="877" extended-state="0" />
@@ -354,8 +347,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/myCloset/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="42" lean-forward="true" selection-start-line="21" selection-start-column="42" selection-end-line="21" selection-end-column="42" />
+        <state relative-caret-position="180">
+          <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
           <folding>
             <element signature="e#632#664#0" expanded="true" />
           </folding>
