@@ -1,13 +1,12 @@
+from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
+from closetModel import views
 
-from django.contrib import admin
-from django.urls import register_converter,path
-from .views import ClothesDetail,ClothesList,CollectionDetail,CollectionList,UserDetail,UserList,MatchgetID,MatchList,MatchDetail
-urlpatterns = [
-    path('Clothes/', ClothesList.as_view()),
-    path('Clothes/<int:pk>/', ClothesDetail.as_view()),
-    path('Collection/', CollectionList.as_view()),
-    path('Collection/<int:pk>/', CollectionDetail.as_view()),
-    path('User/', UserList.as_view()),
-    path('User/<int:pk>/', UserDetail.as_view()),
-
-]
+# API endpoints
+urlpatterns = format_suffix_patterns([
+    path('users/', views.UserList.as_view(), name='user-list'),
+    path('users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
+    path('clothes/', views.ClothesList.as_view(), name='clothes-list'),
+    path('clothes/<int:pk>/', views.ClothesDetail.as_view(), name='clothes-detail'),
+    path('clothes/(?P<userID>.+)/$', views.ClothesList.as_view(), name='user-clothes-list'),
+])
