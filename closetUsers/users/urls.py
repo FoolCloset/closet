@@ -13,4 +13,5 @@ urlpatterns = format_suffix_patterns([
     path('clothes/<int:pk>/', views.ClothesDetail.as_view(), name='clothes-detail'),
     path('users/', views.UserList.as_view(), name='user-list'),
     path('users/<int:pk>', views.UserDetail.as_view(), name='user-detail'),
+    path('getmatch/',views.get_match,name="match-getmatch")
 ])
