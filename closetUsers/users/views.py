@@ -149,7 +149,7 @@ def get_match(request):
             #filter.value[index]直接就是一个字典
             match_photo=Match.objects.filter(user=User.objects.get(username=username)).values('clothes_list')
             #是一个对象数组,photo_urls[i]代表一组搭配的图片
-            photo_urls=[len(match_photo)]
+            photo_urls={}
             for i in range(len(match_photo)):
                 photo_urls[i]=string_to_urls(username,match_photo[i]['clothes_list'])
             return JsonResponse(data={"msg":"OK",'photo':photo_urls},status=status.HTTP_200_OK)
@@ -185,11 +185,10 @@ def get_match(request):
                 return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
 
             #不存在搭配,插入
-            try:
-                a=Match.objects.create(user=request.user,clothes_list=match['clothes_list'],like=match['like'],
+            user=User.objects.get(username=username)
+            Match.objects.create(user=user,clothes_list=match['clothes_list'],like=match['like'],
                                  occasion=match['occasion'])
-            except a==None:
-                return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
+
             return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
         else:
             return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
