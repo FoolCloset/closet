@@ -185,7 +185,8 @@ def get_match(request):
                 return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
 
             #不存在搭配,插入
-            try:
+            user=User.objects.get(username=username)
+            Match.objects.create(user=user,clothes_list=match['clothes_list'],like=match['like'],
                                  occasion=match['occasion'])
 
             return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
