@@ -178,14 +178,14 @@ def get_match(request):
 
             #还需要判断数据库中是否已有该条搭配
             #已有搭配
-            try:
-                user=User.objects.filter(username=username)
-                ifMatch=Match.objects.filter(user=user,clothes_list=match['clothes_list'])
-            except ifMatch==None:
+
+            user=User.objects.get(username=username)
+            ifMatch=Match.objects.filter(user=user,clothes_list=match['clothes_list'])
+            if ifMatch:
                 return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
 
             #不存在搭配,插入
-            user=User.objects.get(username=username)
+
             Match.objects.create(user=user,clothes_list=match['clothes_list'],like=match['like'],
                                  occasion=match['occasion'])
 
