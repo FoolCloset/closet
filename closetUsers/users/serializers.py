@@ -37,3 +37,19 @@ class CollectionSerializer(serializers.ModelSerializer):
         model=Collection
         fields=('user','match','snapshot')
 
+        def create(self, validated_data):
+            """
+            Create and return a new `Snippet` instance, given the validated data.
+            """
+            return Collection.objects.create(**validated_data)
+
+        def update(self, instance, validated_data):
+            """
+            Update and return an existing `Snippet` instance, given the validated data.
+            """
+            instance.user = validated_data.get('user', instance.user)
+            instance.match = validated_data.get('match', instance.match)
+            instance.snapshot = validated_data.get('snapshot', instance.snapshot)
+            instance.save()
+            return instance
+
