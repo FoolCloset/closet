@@ -29,4 +29,11 @@ class ClothesSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'id', 'user_id', 'owner', 'type', 'color', 'season', 'pattern', 'photo', 'note')
 
 
+#收藏信息序列
+class CollectionSerializer(serializers.ModelSerializer):
+    # owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model=Collection
+        fields=('user','match','snapshot')
 
