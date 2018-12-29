@@ -11,8 +11,9 @@ import random
 from .serializers import UserInfoSerializer, ClothesSerializer, UserSerializer,CollectionSerializer
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, SelfOrReadOnly
 from rest_framework import permissions
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
@@ -260,9 +261,25 @@ class UserInfoList(generics.ListAPIView):
 
 # 返回具体某个用户的个人信息
 # UserDetail returns the information of user which id matches request para id
-class UserInfoDetail(generics.RetrieveAPIView):
+class UserInfoDetail(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserInfoSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, SelfOrReadOnly)
+
+    # 修改用户信息，邮箱手机号昵称等唯一标示的用户信息不可通过这个方式更改
+    def perform_update(self, serializer):
+        user_id = self.request.user.id
+        user = get_object_or_404(User, id=user_id)
+        data = serializer.validated_data
+        # 用户id、username、email、phone不允许通过该方法更改
+        data['id'] = user.id
+        data['username'] = user.username
+        data['phone'] = user.phone
+        data['email'] = user.email
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
 
 # 返回用户的相关信息，目前为用户的衣物列表【总】
@@ -301,6 +318,7 @@ class ClothesDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Clothes.objects.all()
     serializer_class = ClothesSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
 
 # 返回收藏
 # CollectionList returns a type or all clothes info of one user
