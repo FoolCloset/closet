@@ -151,7 +151,13 @@ def get_match(request):
             #是一个对象数组,photo_urls[i]代表一组搭配的图片
             photo_urls={}
             for i in range(len(match_photo)):
-                photo_urls[i]=string_to_urls(username,match_photo[i]['clothes_list'])
+                str = string_to_urls(username,match_photo[i]['clothes_list'])
+                if str:
+                    photo_urls[i] = str
+                else:
+                    return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
+
+                print('log')
             return JsonResponse(data={"msg":"OK",'photo':photo_urls},status=status.HTTP_200_OK)
         else:
             return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
@@ -174,7 +180,11 @@ def get_match(request):
         #将match数据返回并且插入数据库
         if match:
             #photo是一个map,key为photo1,photo2,photo3
-            photo_urls=string_to_urls(username,match.get('clothes_list'))
+            str=string_to_urls(username,match.get('clothes_list'))
+            if str:
+                photo_urls=str
+            else:
+                return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
 
             #还需要判断数据库中是否已有该条搭配
             #已有搭配
@@ -220,7 +230,7 @@ def match_by_tem_and_occa(type):
     '''
     根据算法，来产生相应的match
     '''
-    match={'user':user,'clothes_list':'1,2,3,','like':False,'occasion':'daily'}
+    match={'user':user,'clothes_list':'2,4,5,','like':False,'occasion':'daily'}
     return match
 
 def match_by_tem(type):
@@ -230,7 +240,7 @@ def match_by_tem(type):
     '''
     根据算法，来产生相应的match
     '''
-    match = {'user': user, 'clothes_list': '1,2,5,', 'like': False, 'occasion': 'daily'}
+    match = {'user': user, 'clothes_list': '2,4,5,', 'like': False, 'occasion': 'daily'}
     return match
 
 
@@ -243,9 +253,11 @@ def string_to_urls(username,liststring):
     clothes=Clothes.objects.filter(user=User.objects.get(username=username))
     clothes_photo={}
     for i in range(3):
-        clothes_photo[i]=clothes.filter(id=int(id_list[i])).values('photo')[0]['photo']
+        if(len(clothes.filter(id=6).values('photo'))==0):
+            return False
+        clothes_photo[i] = clothes.filter(id=int(id_list[i])).values('photo')[0]['photo']
+        print(i)
         # photo[i]=json.loads(serializers.serialize('json',clothes_photo[i]))[0].get('fields').get('photo')
-
     return clothes_photo
 
 
