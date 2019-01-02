@@ -26,7 +26,7 @@ class ClothesSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Clothes
-        fields = ('url', 'id', 'user_id', 'owner', 'type', 'color', 'season', 'pattern', 'photo', 'note')
+        fields = ('url', 'id', 'user_id', 'owner', 'type', 'subtype', 'color', 'season', 'pattern', 'photo', 'note')
 
 
 #收藏信息序列
@@ -34,8 +34,8 @@ class CollectionSerializer(serializers.ModelSerializer):
     # owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
-        model=Collection
-        fields=('user','match','snapshot')
+        model = Collection
+        fields = ('user', 'match', 'snapshot')
 
         def create(self, validated_data):
             """

@@ -20,6 +20,7 @@ class User(AbstractUser):
 clothes表
 user：外键取自User
 type：种类，如上衣、裤子、外套
+subtype: 进一步细分的种类，如牛仔裤、西装裤、衬衫、卫衣等
 color：衣物主色调，以RGB值表示
 season：季节，衣物主要适合在哪个季节穿，备选项：春秋、夏、冬
 pattern：款式：花色、纯色
@@ -31,12 +32,13 @@ note：备注
 class Clothes(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='clothes', default=1, on_delete=models.CASCADE)
-    type = models.CharField(max_length=20, default='Tshirt' )
+    type = models.CharField(max_length=20, default='other')
     color = models.CharField(max_length=20, default='black')
     note = models.TextField(max_length=100, null=True, blank=True)
     season = models.CharField(max_length=20, null=True, blank=True, default='summer')
     pattern = models.CharField(max_length=20, default='pure')
     photo = models.URLField(default='http://120.76.62.132:8080/photos/default.jpg')
+    subtype = models.CharField(max_length=20, default='other')
     # class Meta:
     #     unique_together=("id", "user")
 

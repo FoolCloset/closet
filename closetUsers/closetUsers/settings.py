@@ -25,7 +25,9 @@ SECRET_KEY = 'vaey4oon^nz-c)1++^f=bla(vs(8cgib@q!u!xek(gc+z!_)4-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['120.76.62.132', '127.0.0.1', 'localhost', ]
+
+PHOTO_HOST = '120.76.62.132'
 
 
 # Application definition
@@ -140,5 +142,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+# 收集Django的静态文件到同一个static中
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(STATIC_ROOT, "media/")
+MEDIA_URL = '/media/'
+
+IMG_ROOT = os.path.join(STATIC_ROOT, "img/")
+IMG_URL = '/img/'
+
+

@@ -1,6 +1,9 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from users import views
+from django.views.static import serve
+from django.conf import settings
+
 
 urlpatterns = format_suffix_patterns([
     path('sign-up/', views.sign_up),
@@ -15,5 +18,6 @@ urlpatterns = format_suffix_patterns([
     path('collections/<int:pk>/', views.CollectionDetail.as_view(), name='collection-detail'),
     path('users/', views.UserList.as_view(), name='user-list'),
     path('users/<int:pk>', views.UserDetail.as_view(), name='user-detail'),
-    path('getmatch/',views.get_match,name="match-getmatch")
+    # path('getmatch/', views.get_match, name="match-getmatch"),
+    path('upload/', views.upload_img),
 ])

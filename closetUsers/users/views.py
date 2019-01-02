@@ -14,6 +14,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsOwnerOrReadOnly, SelfOrReadOnly
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
+from .matches import *
+from urllib import request
+import requests
+import cv2
+import numpy
+import pandas
+from django.conf import settings
+import os
 
 
 # Create your views here.
@@ -138,116 +146,36 @@ def sign_off(request):
                 return JsonResponse(data={"msg": "注销成功"}, status=status.HTTP_200_OK)
         return JsonResponse(data={"msg": "用户不存在"}, status=status.HTTP_400_BAD_REQUEST)
 
-#生成搭配
+
+# 上传图片到静态文件的文件夹，返回图片的url
 @csrf_exempt
-def get_match(request):
-    #发出get请求认为是返回当前用户的已经生成好的搭配
-    if request.method=='GET':
-        # data=json.loads(request.body)
-        username=request.GET.get('username')
-        if username:
-            #获得对用用户的photo列表，转成url,match_photo是一个字典数组
-            #filter.value[index]直接就是一个字典
-            match_photo=Match.objects.filter(user=User.objects.get(username=username)).values('clothes_list')
-            #是一个对象数组,photo_urls[i]代表一组搭配的图片
-            photo_urls={}
-            for i in range(len(match_photo)):
-                photo_urls[i]=string_to_urls(username,match_photo[i]['clothes_list'])
-            return JsonResponse(data={"msg":"OK",'photo':photo_urls},status=status.HTTP_200_OK)
-        else:
-            return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
+def upload_img(request):
 
-    #发出post请求，认为是创建新的搭配
-    if request.method=='POST':
-        data=json.loads(request.body)
-        if 'username'in data and 'password'in data:
-            username = data['username']
-            password = data['password']
-            user=authenticate(username=username, password=password)
-            #这里认为match的图片区域还是字符串的形式 不是url数组
-            if user:
-                #验证成功
-                match=create_match(data)
-        else:
-            #未提供身份验证的参数
-            return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
-
-        #将match数据返回并且插入数据库
-        if match:
-            #photo是一个map,key为photo1,photo2,photo3
-            photo_urls=string_to_urls(username,match.get('clothes_list'))
-
-            #还需要判断数据库中是否已有该条搭配
-            #已有搭配
-
-            user=User.objects.get(username=username)
-            ifMatch=Match.objects.filter(user=user,clothes_list=match['clothes_list'])
-            if ifMatch:
-                return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
-
-            #不存在搭配,插入
-
-            Match.objects.create(user=user,clothes_list=match['clothes_list'],like=match['like'],
-                                 occasion=match['occasion'])
-
-            return JsonResponse(data={"msg": "OK",'photo':photo_urls}, status=status.HTTP_200_OK)
-        else:
-            return JsonResponse(data={"msg": "生成搭配失败，参数有误"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-'''
-默认情况下，生成搭配时默认都参考温度，场合可选
-'''
-def create_match(type):
-     if 'temperature' in type and 'occasion' in type:
-         return match_by_tem_and_occa(type)
-
-     elif 'temperature' in type:
-         return match_by_tem(type)
-
-     else:
-         return False
-
-'''
-具体算法待实现,返回的类型应该是match(map结构)
-'''
-def match_by_tem_and_occa(type):
-    tem = type.get('temperature')  # 温度
-    occa = type.get('occasion')  # 场合
-    # userid=User.objects.get(username=type['username']).values('id')#获取对应用户名的id
-    #clothes_list是一个query_set,遍历然后clothes_list[index]就是个对象可以取其中的属性
-    user=User.objects.get(username=type['username'])
-    clothes_list=Clothes.objects.filter(user=user)#获取该用户的衣服列表
-    '''
-    根据算法，来产生相应的match
-    '''
-    match={'user':user,'clothes_list':'1,2,3,','like':False,'occasion':'daily'}
-    return match
-
-def match_by_tem(type):
-    tem = type.get('temperature')  # 温度
-    user = User.objects.get(username=type['username'])
-    clothes_list = Clothes.objects.filter(user=user)  # 获取该用户的衣服列表
-    '''
-    根据算法，来产生相应的match
-    '''
-    match = {'user': user, 'clothes_list': '1,2,5,', 'like': False, 'occasion': 'daily'}
-    return match
-
-
-'''
-将clothes_list的字符串信息转化为对应照片的urls信息
-'''
-def string_to_urls(username,liststring):
-    id_list=liststring.split(',')
-    #filter之后取[index],有Objects就是对象，没有就是一个数组
-    clothes=Clothes.objects.filter(user=User.objects.get(username=username))
-    clothes_photo={}
-    for i in range(3):
-        clothes_photo[i]=clothes.filter(id=int(id_list[i])).values('photo')[0]['photo']
-        # photo[i]=json.loads(serializers.serialize('json',clothes_photo[i]))[0].get('fields').get('photo')
-
-    return clothes_photo
+    if request.method == 'POST':
+        img = request.FILES.get('file', None)
+        if not img:
+            return JsonResponse(data={"msg": "没有上传的图片文件"}, status=status.HTTP_400_BAD_REQUEST)
+        # 验证用户权限
+        user = User.objects.filter(username=request.user.username)
+        if not user:
+            return JsonResponse(data={"msg": "无权限访问该操作"}, status=status.HTTP_401_UNAUTHORIZED)
+        # if 'name' not in img:
+        #     return JsonResponse(data={"msg": "无名文件无法上传"}, status=status.HTTP_400_BAD_REQUEST)
+        img_id = Clothes.objects.all().order_by('-id').first().id
+        file_name = str(user.id) + '_' + str(img_id) + '.png'
+        file_path = os.path.join(settings.IMG_ROOT, file_name)
+        while os.path.exists(file_path):
+            img_id = Clothes.objects.all().order_by('-id').first().id + 1
+            file_name = str(user.id) + '_' + str(img_id) + '.png'
+            file_path = os.path.join(settings.IMG_ROOT, file_name)
+        dest_img_path = open(file_path, 'wb+')
+        for chunk in img.chunks():
+            dest_img_path.write(chunk)
+        dest_img_path.close()
+        file_url = 'http://' + settings.PHOTO_HOST + '/img/' + img.name
+        return JsonResponse(data={"msg": "图片上传成功", "url": file_url}, status=status.HTTP_202_ACCEPTED)
+    else:
+        return JsonResponse(data={"msg": "this method is not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 # 返回用户的个人信息总列表或带有查询参数的列表
@@ -328,7 +256,7 @@ class CollectionList(generics.ListCreateAPIView):
     filter_backends = (DjangoFilterBackend, )
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
     # enable filter para list
-    filter_fields = ('user', 'match','snapshot')
+    filter_fields = ('user', 'match', 'snapshot')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
