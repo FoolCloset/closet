@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.q.myapplication">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MatchActivity" />
+        <activity android:name=".SubCollectionActivity" />
+        <activity
+            android:name=".CollectionsActivity"
+            android:label="@string/title_activity_collections"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".OcassionsActivity"></activity>
+
+       <!--+<provider android:name="android.support.v4.content.FileProvider" android:grantUriPermissions="true" android:exported="false" android:authorities="${applicationId}.fileprovider"/>-->
+
+        <activity android:name=".ClothesSortActivity"/>
+
+        <activity android:name=".SignUpActivity"/>
+
+        <activity android:name=".SignInActivity" android:label="@string/title_activity_signin"/>
+
+        <activity android:name=".PhotoActivity"/>
+
+        <activity android:name=".ClosetActivity"/>
+
+        <activity android:name=".HomeActivity" android:theme="@style/AppTheme" android:label="@string/title_activity_home"/>
+
+        <activity android:name=".SortDetailActivity" android:theme="@style/AppTheme" android:label="@string/title_activity_sort_detaill"/>
+
+        <activity android:name=".ClothesDetailActivity"/>
+
+        <activity android:name=".UserActivity"> </activity>
+    </application>
+
+</manifest>
