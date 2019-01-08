@@ -30,26 +30,22 @@ class ClothesSerializer(serializers.HyperlinkedModelSerializer):
 
 
 #收藏信息序列
-class CollectionSerializer(serializers.ModelSerializer):
-    # owner = serializers.ReadOnlyField(source='owner.username')
+class CollectionSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Collection
-        fields = ('user', 'match', 'snapshot')
+        fields = ('user', 'owner', 'match', 'snapshot')
 
-        def create(self, validated_data):
-            """
-            Create and return a new `Snippet` instance, given the validated data.
-            """
-            return Collection.objects.create(**validated_data)
+#搭配信息序列
+class MatchSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
 
-        def update(self, instance, validated_data):
-            """
-            Update and return an existing `Snippet` instance, given the validated data.
-            """
-            instance.user = validated_data.get('user', instance.user)
-            instance.match = validated_data.get('match', instance.match)
-            instance.snapshot = validated_data.get('snapshot', instance.snapshot)
-            instance.save()
-            return instance
+
+    class Meta:
+        model = Match
+        fields = ('id', 'user', 'clothes_list', 'like', 'occasion', 'owner')
+
+
+
 

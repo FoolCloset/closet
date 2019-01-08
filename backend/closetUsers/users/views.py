@@ -8,7 +8,7 @@ import json
 from django.contrib.auth import login, authenticate, logout
 import re
 import random
-from .serializers import UserInfoSerializer, ClothesSerializer, UserSerializer,CollectionSerializer
+from .serializers import UserInfoSerializer, ClothesSerializer, UserSerializer, CollectionSerializer, MatchSerializer
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsOwnerOrReadOnly, SelfOrReadOnly
@@ -268,6 +268,29 @@ class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
+
+
+ #返回搭配
+# MatchList returns a type or all clothes info of one user
+class MatchList(generics.ListCreateAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
+    filter_backends = (DjangoFilterBackend,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+    # enable filter para list
+    filter_fields = ('id', 'user', 'clothes_list', 'like', 'occasion')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+# 返回、修改或删除搭配的具体信息
+# get specific Match info, identified by id
+class MatchDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
 
 
 
