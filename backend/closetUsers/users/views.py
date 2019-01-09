@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import User, Clothes, Match, Collection
 from django.views.decorators.csrf import csrf_exempt
 from django.core import  serializers
+from rest_framework import mixins
 import json
 from django.contrib.auth import login, authenticate, logout
 import re
@@ -268,6 +269,7 @@ class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
 
 
 

@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-
 public class ClosetActivity extends AppCompatActivity {
 
     @Override

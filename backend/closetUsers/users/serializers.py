@@ -30,12 +30,13 @@ class ClothesSerializer(serializers.HyperlinkedModelSerializer):
 
 
 #收藏信息序列
-class CollectionSerializer(serializers.HyperlinkedModelSerializer):
+class CollectionSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Collection
-        fields = ('user', 'owner', 'match', 'snapshot')
+        # fields = ('id', 'user', 'owner', 'match', 'snapshot')
+        fields="__all__"
 
 #搭配信息序列
 class MatchSerializer(serializers.HyperlinkedModelSerializer):
