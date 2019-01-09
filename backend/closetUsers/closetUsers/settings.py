@@ -25,8 +25,8 @@ SECRET_KEY = 'vaey4oon^nz-c)1++^f=bla(vs(8cgib@q!u!xek(gc+z!_)4-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['120.76.62.132', '127.0.0.1', 'localhost', ]
-
+# ALLOWED_HOSTS = ['120.76.62.132', '127.0.0.1', 'localhost', ]
+ALLOWED_HOSTS = ['*',]
 PHOTO_HOST = '120.76.62.132'
 
 
