@@ -225,12 +225,12 @@ public class PhotoActivity extends Activity {
                     try{
                         bitmap = data.getExtras().getParcelable("data");
                         pngfile=saveBitmapFile(bitmap);
-                        new Thread(){
-                            public void run(){
-                                request();
-                            }
-                        }.start();
-//                        request();
+//                        new Thread(){
+//                            public void run(){
+//                                request();
+//                            }
+//                        }.start();
+                        request();
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -249,12 +249,12 @@ public class PhotoActivity extends Activity {
                             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri), null, option);
 //                            bitmap = data.getParcelableExtra("data");
                             pngfile=saveBitmapFile(bitmap);
-//                            request();
-                            new Thread(){
-                                public void run(){
-                                    request();
-                                }
-                            }.start();
+                            request();
+//                            new Thread(){
+//                                public void run(){
+//                                    request();
+//                                }
+//                            }.start();
                         // 展示图库中选择裁剪后的图片
 //                        if(data != null&&imageUri==null){
 //                            // 根据返回的data，获取Bitmap对象

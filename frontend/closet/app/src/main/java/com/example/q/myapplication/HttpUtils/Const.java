@@ -1,21 +1,15 @@
 package com.example.q.myapplication.HttpUtils;
 
-import android.graphics.Bitmap;
 import android.util.Base64;
-
-import java.util.HashMap;
-
 /*当前登陆用户的密码和用户名*/
 public  class Const {
     public static String username;
     public static String password;
-
-    public static final String userid="6";
+    public static String userid;
     public static final  String url="http://192.168.31.234:8000/";
     public static final  String weather_url="https://api.seniverse.com/";
     public static String temperature;
     public static String weathertext;
-    public static HashMap<String,Bitmap> bitmapHashMap;
     public static String get_token(){
         String base=username+":"+password;
         String authorization="Basic "+Base64.encodeToString(base.getBytes(),Base64.NO_WRAP);

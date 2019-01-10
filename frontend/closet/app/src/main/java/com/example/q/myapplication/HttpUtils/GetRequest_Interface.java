@@ -1,22 +1,16 @@
 package com.example.q.myapplication.HttpUtils;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Multipart;
-import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface GetRequest_Interface {
     //获得天气
     @GET("v3/weather/now.json?key=rp1jtnb6kembxgcj&location=shanghai&language=zh-Hans&unit=c")
     Call<Weather>getWeatherCall();
-
-
     //收藏的get
     @GET("collections/")
-    Call<Collections>getCollectionCall(@Query("user") String id);
+    Call<Collections>getCollectionCall();
     // 注解里传入 网络请求 的部分URL地址
     // Retrofit把网络请求的URL分成了两部分：一部分放在Retrofit对象里，另一部分放在网络请求接口里
     // 如果接口里的url是一个完整的网址，那么放在Retrofit对象里的URL可以忽略
