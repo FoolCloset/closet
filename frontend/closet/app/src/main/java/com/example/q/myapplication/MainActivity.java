@@ -26,6 +26,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
 public class MainActivity extends AppCompatActivity {
     public Handler handler;
     final int SUCCESS=1;
@@ -75,7 +82,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+        private boolean readLocalFile(String file_name){
+        try{
+            String DIR_NAME = "";
+//            String FILE_NAME = "test";
+            String dir_path = getCacheDir().getAbsolutePath();
+//            String dir_path = Environment.getDataDirectory().getAbsoluteFile().getAbsolutePath()
+//                    + File.separator + DIR_NAME;
+            File file = new File(dir_path);
+            file = new File(dir_path + File.separator + file_name);
+            FileInputStream fis = new FileInputStream(file);
+            FileOutputStream fos = new FileOutputStream(file, true);
+            InputStreamReader file_reader = new InputStreamReader(fis, "UTF-8");
+            char[] input = new char[fis.available()];
+            file_reader.read(input);
+            file_reader.close();
+            fis.close();
+            String data = new String(input);
+            System.out.println(data);
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+            return false;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+  
     public void request(){
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()

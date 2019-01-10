@@ -33,7 +33,7 @@
                     android:layout_margin="10dp"
                     android:background="#00000000"
 
-                    app:srcCompat="@drawable/clothesss" />
+                    app:srcCompat="@drawable/dust_coat" />
 
                 <LinearLayout
                     android:layout_width="120dp"
@@ -75,7 +75,7 @@
                     android:layout_margin="10dp"
                     android:layout_marginLeft="20dp"
 
-                    app:srcCompat="@drawable/clothesss" />
+                    app:srcCompat="@drawable/dust_coat" />
 
                 <LinearLayout
                     android:layout_width="120dp"
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
 
-                    app:srcCompat="@drawable/clothesss" />
+                    app:srcCompat="@drawable/dust_coat" />
 
                 <LinearLayout
                     android:layout_width="120dp"
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_marginLeft="20dp"
-                    app:srcCompat="@drawable/clothesss" />
+                    app:srcCompat="@drawable/dust_coat" />
 
                 <LinearLayout
                     android:layout_width="120dp"
@@ -209,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
 
-                    app:srcCompat="@drawable/clothesss" />
+                    app:srcCompat="@drawable/dust_coat" />
 
                 <LinearLayout
                     android:layout_width="120dp"
@@ -250,7 +250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
 
-                    app:srcCompat="@drawable/clothesss" />
+                    app:srcCompat="@drawable/dust_coat" />
 
                 <LinearLayout
                     android:layout_width="120dp"
