@@ -1,41 +1,52 @@
 package com.example.q.myapplication;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.CursorLoader;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.q.myapplication.Retrofit.matches.DailyMatchGetRequest_Interface;
+import com.example.q.myapplication.Retrofit.matches.matches;
+import com.example.q.myapplication.Retrofit.users.UsersPostRequest_Interface;
+import com.example.q.myapplication.Retrofit.users.sign;
+import com.example.q.myapplication.Retrofit.users.users;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.channels.InterruptedByTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import library.HttpUtil;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
     private Button item_detail, item_category_report;
@@ -44,70 +55,35 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private Find_PhoneFragment phoneFragment;
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
     private FragmentAdapter mFragmentAdapter;
+    private String data = "";
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-//    private UserLoginTask mAuthTask = null;
-
-    // UI references.
-    private AutoCompleteTextView mUserView;
-    private EditText mEmailView;
-    private EditText mPhoneView;
-    private EditText mPasswordView;
-    private View mProgressView1;
-    private View mLoginFormView1;
-    private View mProgressView2;
-    private View mLoginFormView2;
-    private String mEmail;
-    private String mPassword;
-    private UserLoginTask mAuthTask = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         initViews();
-        mUserView = (AutoCompleteTextView) findViewById(R.id.username);
-        populateAutoComplete();
-        mEmailView = (EditText) findViewById(R.id.email);
-        mPhoneView = (EditText) findViewById(R.id.phone);
-        mPasswordView = (EditText) findViewById(R.id.password);
-//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-//                    attemptLogin();
-//                    Intent intent=new Intent(SignUpActivity.this,HomeActivity.class);
-//                    startActivity(intent);
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-        mLoginFormView1 = findViewById(R.id.phone_login_form);
-        mProgressView1 = findViewById(R.id.phone_login_progress);
-        mLoginFormView2 = findViewById(R.id.email_login_form);
-        mProgressView2 = findViewById(R.id.email_login_progress);
         Button signupbtn=findViewById(R.id.sign_up_button);
         signupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(SignUpActivity.this,SignInActivity.class);
-                startActivity(intent);
+                writeLocalFile("test", "may");
+                readLocalFile("test");
+                try {
+                    attemptSignup();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+//                if(attemptSignup()) {
+//                    Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(intent);
+//                }
+
             }
         });
+
+
         mFragmentAdapter = new FragmentAdapter(this.getSupportFragmentManager(), mFragmentList);
         vp.setOffscreenPageLimit(2);//ViewPager的缓存为2帧
         vp.setAdapter(mFragmentAdapter);
@@ -135,185 +111,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 arg0==0的时辰默示什么都没做。*/
             }
         });
-    }
-
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-//        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mUserView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
-    private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
-        // Reset errors.
-        mUserView.setError(null);
-        mPasswordView.setError(null);
-        mEmailView.setError(null);
-        mPhoneView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String user = mUserView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String email=mEmailView.getText().toString();
-        String phone=mPhoneView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(phone) && !isPhoneValid(phone)) {
-            mPhoneView.setError(getString(R.string.error_field_required));
-            focusView = mPhoneView;
-            cancel = true;
-        }
-
-        if (!TextUtils.isEmpty(user) && !isUserValid(user)) {
-            mUserView.setError(getString(R.string.error_field_required));
-            focusView = mUserView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_incorrect_password));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (!isEmailValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(user, password);
-            mAuthTask.execute((Void) null);
-        }
-    }
-
-    private boolean isUserValid(String user) {
-        //TODO: Replace this with your own logic
-        return user.length() > 1;
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
-    private boolean isPhoneValid(String phone) {
-        //TODO: Replace this with your own logic
-        return phone.length() > 10;
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.indexOf("@")==1;
-    }
-
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView1.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView1.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView1.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-            mLoginFormView2.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView2.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView2.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView1.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView1.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView1.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-            mProgressView2.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView2.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView2.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView1.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView1.setVisibility(show ? View.GONE : View.VISIBLE);
-            mProgressView2.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView2.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     /**
@@ -383,56 +180,274 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             item_detail.setTextColor(Color.parseColor("#000000"));
         }
     }
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUser;
-        private final String mPassword;
+    private boolean attemptSignup() throws InterruptedException {
+//        check if the value is valid
+//        返回一个JSONObject，email或者phone如果没有就传空字符串
+        JSONObject json_data = new JSONObject();
+//        Map<String,String> map = new HashMap<String, String>();
+//        这个只是一个实例，我是要给你们看怎么加东西
+        String username = vp.toString();
+//        String data = "";
+        try{
+            json_data.put("username", "may33");
+            json_data.put("password", "may123");
+            json_data.put("phone", "18967223241");
+            json_data.put("email", "");
+            json_data.put("profile", "");
+            json_data.put("style", "casual");
+            data = json_data.toString();
+//            String data = json
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+// 后面data转成String类型
 
-        UserLoginTask(String user, String password) {
-            mUser = user;
-            mPassword = password;
+//        if(sendSignUpRequest(data)){
+//            System.out.println("ok");
+//            return true;
+//        }else{
+//            return false;
+//        }
+
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+//            thread.join();
+        return true;
+    }
+
+    public String request(){
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://120.76.62.132:80/") // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final UsersPostRequest_Interface request = retrofit.create(UsersPostRequest_Interface.class);
+        JSONObject object = null;
+        users user = new users();
+        MediaType textType = MediaType.parse("text/plain");
+        try {
+            object = new JSONObject(data);
+            user.setId(1);
+            user.setEmail(object.getString("email"));
+            user.setPhone(object.getString("phone"));
+            user.setProfile(object.getString("profile"));
+            user.setStyle(object.getString("style"));
+            user.setUsername(object.getString("username"));
+            user.setPassword(object.getString("password"));
+//            RequestBody username = RequestBody.create(textType, object.getString("username"));
+//            RequestBody password = RequestBody.create(textType, object.getString("password"));
+//            RequestBody profile = RequestBody.create(textType, object.getString("profile"));
+//            RequestBody style = RequestBody.create(textType, object.getString("style"));
+//            RequestBody email = RequestBody.create(textType, object.getString("email"));
+//            RequestBody phone = RequestBody.create(textType, object.getString("phone"));
+
+            //对 发送请求 进行封装
+            Call<sign> call = request.getCall(user);
+            sign result_sign = call.execute().body();
+            String result = result_sign.getDataString();
+            System.out.println("request call");
+            return result;
+//            new Thread(){call.execute().body();}.start();
+
+
+////            步骤6:发送网络请求(异步)
+//            call.enqueue(new Callback<sign>() {
+//                //请求成功时回调
+//                @Override
+//                public void onResponse(Call<sign> call, Response<sign> response) {
+//                    String a;
+////                    response.body();
+//                    // 步骤7：处理返回的数据结果
+//                    if(response.body() != null){
+//                        response.body().show();
+//                    }else{
+//                        try {
+//                            String err_msg = response.errorBody().string();
+//                            Log.i("code", err_msg);
+//                            System.out.println(err_msg);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    System.out.println("hello world");
+//                    //response.body就是我声明的类
+//                }
+//
+//                //请求失败时回调
+//                @Override
+//                public void onFailure(Call<sign> call, Throwable throwable) {
+//                    System.out.println("fail to connect");
+//                }
+//            });
+
+        }catch (JSONException e){
+            e.printStackTrace();
+            return "error";
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+//        String username="xue";
+//        String password="xue123456";
+//        String base=username+":"+password;
+//        String authorization="Basic "+ Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+//        RequestBody username = RequestBody.create(textType, object.getString("username"));
+//        RequestBody match = RequestBody.create(textType, "1");
+//        RequestBody name = RequestBody.create("text","11");
+//        RequestBody age = RequestBody.create(MediaType.parse("text"), "24");
+
+
+        return "ok";
+    }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try{
+//                String data = "";
+                String result = request();
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putString("result", result);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String result = data.getString("result");
+            if(result != "ok"){
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "注册失败，请检测网络是否正常", Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+//            tv_request_result.setText(result);
+        }
+    };
+
+    private boolean sendSignUpRequest(final String data){
+        PostRunThread sign_up_thread = new PostRunThread("sign-up", data);
+        sign_up_thread.start();
+        try{
+            sign_up_thread.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+//        sign_up_thread.run();
+        if(sign_up_thread.getRunLog().toLowerCase() != "ok"){
+            return false;
+        }else{
+            System.out.println(sign_up_thread.getRunLog());
+        }
+        return true;
+    }
+
+    class PostRunThread extends Thread{
+        private String name;
+        private String run_log = "";
+        private String data;
+
+        public PostRunThread(String name, String data){
+            this.name = name;
+            this.data = data;
         }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mUser)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+        public void run(){
+            try{
+//                String url = "http://120.76.62.132:80/" + this.name + "/";
+                String url = "http://120.76.62.132/sign-up/";
+                JSONObject para = new JSONObject(this.data);
+                String detail = HttpUtil.executePostMethod(url, para);
+                JSONObject object = null;
+                object = new JSONObject(detail);
+                String msg = object.getString("msg");
+                if(msg == null){
+                    msg = "ok";
                 }
+                this.run_log = msg;
+                return;
+//                    JSONArray result =  object.optJSONArray("results");
+            }catch (JSONException e){
+                e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
             }
 
-            // TODO: register the new account here.
-            return true;
         }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
+        public String getRunLog(){
+            return this.run_log;
 
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+        }
+
+    }
+
+    private void writeLocalFile(String file_name, String data){
+        try{
+            String DIR_NAME = "";
+//            String FILE_NAME = "test";
+            String dir_path = getCacheDir().getAbsolutePath();
+//            String dir_path = Environment.getDataDirectory().getAbsoluteFile().getAbsolutePath()
+//                    + File.separator + DIR_NAME;
+            File file = new File(dir_path);
+            if(!file.exists())
+                file.mkdir();
+            file = new File(dir_path + File.separator + file_name);
+            if(!file.exists()){
+                file.createNewFile();
             }
+            FileOutputStream fos = new FileOutputStream(file, true);
+            OutputStreamWriter file_writer = new OutputStreamWriter(fos, "UTF-8");
+            file_writer.write("this is test");
+            file_writer.write(dir_path);
+            file_writer.flush();
+            fos.flush();
+            file_writer.close();
+            fos.close();
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
         }
+    }
 
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+    private void readLocalFile(String file_name){
+        try{
+            String DIR_NAME = "";
+//            String FILE_NAME = "test";
+            String dir_path = getCacheDir().getAbsolutePath();
+//            String dir_path = Environment.getDataDirectory().getAbsoluteFile().getAbsolutePath()
+//                    + File.separator + DIR_NAME;
+            File file = new File(dir_path);
+            file = new File(dir_path + File.separator + file_name);
+            FileInputStream fis = new FileInputStream(file);
+            FileOutputStream fos = new FileOutputStream(file, true);
+            InputStreamReader file_reader = new InputStreamReader(fis, "UTF-8");
+            char[] input = new char[fis.available()];
+            file_reader.read(input);
+            file_reader.close();
+            fis.close();
+            String data = new String(input);
+            System.out.println(data);
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 }
