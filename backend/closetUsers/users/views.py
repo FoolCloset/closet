@@ -8,7 +8,8 @@ import json
 from django.contrib.auth import login, authenticate, logout
 import re
 import random
-from .serializers import UserInfoSerializer, ClothesSerializer, UserSerializer,CollectionSerializer
+from .serializers import UserInfoSerializer, ClothesSerializer, UserSerializer, CollectionSerializer
+# from .serializers import SignUpUserInfoSerializer
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsOwnerOrReadOnly, SelfOrReadOnly
@@ -22,6 +23,104 @@ import numpy
 import pandas
 from django.conf import settings
 import os
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+
+# # 一个尝试
+# class SignUpTest(generics.CreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = SignUpUserInfoSerializer
+#     # filter_backends = (DjangoFilterBackend,)
+#     # # enable filter para list
+#     # fields = ('url', 'username', 'id', 'email', 'phone', 'style', 'profile', 'password')
+#
+#     def perform_create(self, serializer):
+#         data = serializer.data
+#         try:
+#             user = User.objects.create_user(username=data['username'], password=data['password'],
+#                                             email=data['email'], phone=data['phone'],
+#                                             style=data['style'], profile=data['profile'])
+#         except ValueError:
+#             raise ValueError("无效数据")
+#         # serializer.save(user=self.request.user)
+
+
+class SignUp(APIView):
+
+
+    def post(self, request, format=None):
+        post_body = request.body.decode('utf-8')
+        try:
+            data = json.loads(post_body)
+        except ValueError:
+            return Response({"msg": "post格式错误，请发送json格式参数"}, status=status.HTTP_400_BAD_REQUEST)
+        data = SignUpData(data)
+        if data.is_valid():
+            user = User.objects.create_user(username=data['username'], password=data['password'],
+                                            email=data['email'],phone=data['phone'],
+                                            style=data['style'], profile=data['profile'])
+            return Response({"results": data}, status=status.HTTP_200_OK)
+        else:
+            msg = data.msg
+            return Response({"msg": msg}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignUpData(object):
+
+    def __init__(self, data):
+        self.data = data
+        self.msg = 'ok'
+
+    def is_valid(self):
+        data = self.data
+        if 'username' not in data or 'password' not in data or 'phone' not in data or 'email' not in data \
+                or 'profile' not in data or 'style' not in data:
+            return False
+        for value in data:
+            msg = is_valid_attr(value, data[value])
+            if msg != "ok":
+                return False
+        return True
+
+
+def is_valid_attr(attr_name, value):
+    if attr_name == 'username':
+        return is_valid_user(value)
+    elif attr_name == 'password':
+        return is_valid_password(value)
+    elif attr_name == 'phone':
+        return is_valid_phone(value)
+    elif attr_name == 'email':
+        return is_valid_email(value)
+    else:
+        return "ok"
+
+
+
+
+def is_valid_user(username):
+    # 我们约定用户名的条件为：3-16个字符，只能包含字母、数字和下划线，且不能为纯数字
+    msg = "ok"
+    name_pat = re.compile(r'^[a-zA-Z0-9_]{3,16}$')
+    pure_num_pat = re.compile(r'^[0-9]{3,16}$')
+    if re.match(pure_num_pat, username):
+        msg = "用户名不可为纯数字"
+    elif len(username) < 3:
+        msg = "用户名需超过3个字符"
+    elif len(username) > 16:
+        msg = "用户名不应超过16个字符"
+    elif not re.match(name_pat, username):
+        msg = "用户名包含非法字符"
+    return msg
+
+
+def is_valid_password(password):
+    msg = "ok"
+    return msg
+
+
+
 
 
 # Create your views here.
@@ -31,7 +130,7 @@ import os
 def sign_up(request):
 
     if request.method == 'POST':
-        post_body = request.body
+        post_body = request.body.decode('utf-8')
         data = json.loads(post_body)
         # 我们约定用户名的条件为：3-16个字符，只能包含字母、数字和下划线，且不能为纯数字
         if 'username' in data:
@@ -52,17 +151,23 @@ def sign_up(request):
         if 'email' in data:
             email = data['email']
             # check if email is valid
-            email_pat = re.compile(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$')
-            if not re.match(email_pat, email):
-                return JsonResponse(data={"msg": "请输入正确的邮箱名"}, status=status.HTTP_400_BAD_REQUEST)
+            if email:
+                email_pat = re.compile(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$')
+                if not re.match(email_pat, email):
+                    return JsonResponse(data={"msg": "请输入正确的邮箱名"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                email = 'error'
         else:
             email = 'error'
         if 'phone' in data:
             phone = data['phone']
-            # check if phone is valid
-            phone_pat = re.compile(r'^(13\d|14[5|7]|15\d|166|17[3|6|7]|18\d)\d{8}$')
-            if not re.match(phone_pat, phone):
-                return JsonResponse(data={"msg": "请输入正确的手机号"}, status=status.HTTP_400_BAD_REQUEST)
+            if phone:
+                # check if phone is valid
+                phone_pat = re.compile(r'^(13\d|14[5|7]|15\d|166|17[3|6|7]|18\d)\d{8}$')
+                if not re.match(phone_pat, phone):
+                    return JsonResponse(data={"msg": "请输入正确的手机号"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                phone = 'error'
         else:
             phone = 'error'
         if 'profile' in data:
@@ -89,7 +194,10 @@ def sign_up(request):
             phone = ''
         user = User.objects.create_user(username=username, password=password, email=email,
                                         phone=phone, style=style, profile=profile)
-        return JsonResponse(data={"msg": "创建成功，登录？"}, status=status.HTTP_200_OK)
+        data['id'] = user.id
+        return JsonResponse(data={"msg": "创建成功，登录？", "data": data}, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse(data={"msg": "this method is not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 # 用户登录
@@ -97,21 +205,26 @@ def sign_up(request):
 def sign_in(request):
 
     if request.method == 'POST':
-        post_body = request.body
-        data = json.loads(post_body)
+        post_body = request.body.decode('utf-8')
+        try:
+            data = json.loads(post_body)
+        except ValueError:
+            return JsonResponse(data={"msg": "post格式错误"}, status=status.HTTP_400_BAD_REQUEST)
         username = data['username']
         password = data['password']
-        print(username)
+        # print(username)
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
                 login(request, user)
-                print(request.user)
-                return JsonResponse(data={"msg": "OK"}, status=status.HTTP_200_OK)
+                # sys.stderr.write(request.user)
+                return JsonResponse(data={"msg": "OK", "username": username, "id": user.id}, status=status.HTTP_200_OK)
             else:
                 return JsonResponse(data={"msg": "用户不存在"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return JsonResponse(data={"msg": "用户或密码错误"}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return JsonResponse(data={"msg": "this method is not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 # 用户登出
@@ -121,6 +234,8 @@ def sign_out(request):
     if request.method == 'GET':
         logout(request)
         return JsonResponse(data={"msg": "登出成功"}, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse(data={"msg": "this method is not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 # 用户注销
@@ -128,7 +243,7 @@ def sign_out(request):
 def sign_off(request):
 
     if request.method == 'POST':
-        post_body = request.body
+        post_body = request.body.decode('utf-8')
         data = json.loads(post_body)
         username = data['username']
         password = data['password']
@@ -145,35 +260,6 @@ def sign_off(request):
             if delete_result:
                 return JsonResponse(data={"msg": "注销成功"}, status=status.HTTP_200_OK)
         return JsonResponse(data={"msg": "用户不存在"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# 上传图片到静态文件的文件夹，返回图片的url
-@csrf_exempt
-def upload_img(request):
-
-    if request.method == 'POST':
-        img = request.FILES.get('file', None)
-        if not img:
-            return JsonResponse(data={"msg": "没有上传的图片文件"}, status=status.HTTP_400_BAD_REQUEST)
-        # 验证用户权限
-        user = User.objects.filter(username=request.user.username)
-        if not user:
-            return JsonResponse(data={"msg": "无权限访问该操作"}, status=status.HTTP_401_UNAUTHORIZED)
-        # if 'name' not in img:
-        #     return JsonResponse(data={"msg": "无名文件无法上传"}, status=status.HTTP_400_BAD_REQUEST)
-        img_id = Clothes.objects.all().order_by('-id').first().id
-        file_name = str(user.id) + '_' + str(img_id) + '.png'
-        file_path = os.path.join(settings.IMG_ROOT, file_name)
-        while os.path.exists(file_path):
-            img_id = Clothes.objects.all().order_by('-id').first().id + 1
-            file_name = str(user.id) + '_' + str(img_id) + '.png'
-            file_path = os.path.join(settings.IMG_ROOT, file_name)
-        dest_img_path = open(file_path, 'wb+')
-        for chunk in img.chunks():
-            dest_img_path.write(chunk)
-        dest_img_path.close()
-        file_url = 'http://' + settings.PHOTO_HOST + '/img/' + img.name
-        return JsonResponse(data={"msg": "图片上传成功", "url": file_url}, status=status.HTTP_202_ACCEPTED)
     else:
         return JsonResponse(data={"msg": "this method is not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
