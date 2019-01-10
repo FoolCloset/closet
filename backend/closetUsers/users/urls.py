@@ -16,8 +16,6 @@ urlpatterns = format_suffix_patterns([
     path('clothes/<int:pk>/', views.ClothesDetail.as_view(), name='clothes-detail'),
     path('collections/', views.CollectionList.as_view(), name='collection-list'),
     path('collections/<int:pk>/', views.CollectionDetail.as_view(), name='collection-detail'),
-    path('match/', views.MatchList.as_view(), name='match-list'),
-    path('match/<int:pk>/', views.MatchDetail.as_view(), name='match-detail'),
     path('users/', views.UserList.as_view(), name='user-list'),
     path('users/<int:pk>', views.UserDetail.as_view(), name='user-detail'),
     path('upload/', clothes_view.upload_img),
