@@ -29,7 +29,7 @@
             android:layout_gravity="center"
             android:background="#00000000"
             android:orientation="vertical"
-
+            android:src="@drawable/clothes"
             app:srcCompat="@drawable/blue_suit"
             tools:layout_editor_absoluteX="28dp"
             tools:layout_editor_absoluteY="87dp" />

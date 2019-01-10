@@ -10,6 +10,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private Find_PhoneFragment phoneFragment;
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
     private FragmentAdapter mFragmentAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
