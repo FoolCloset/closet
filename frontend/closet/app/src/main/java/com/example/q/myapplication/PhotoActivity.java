@@ -1,244 +1,78 @@
 package com.example.q.myapplication;
 //
-import android.Manifest;
-import android.annotation.TargetApi;
+import com.example.q.myapplication.HttpUtils.imageResponse;
 import android.app.Activity;
-import android.content.ContentUris;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.os.StrictMode;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-
-import java.io.File;
-import java.io.IOException;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.q.myapplication.HttpUtils.PostRequest_Interface;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-//
-//public class PhotoActivity extends AppCompatActivity {
-//    private ImageView imageView;
-//    File file = new File(Environment.getExternalStorageDirectory().getPath() + "/photo.png");//设置录像存储路径
-//    private Uri imageUri = Uri.fromFile(file);
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_photo);
-//
-//        imageView = findViewById(R.id.picture);
-//        ImageButton returnhome1=findViewById(R.id.returnhome1);
-//        returnhome1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent=new Intent(PhotoActivity.this,HomeActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        Button upload=findViewById(R.id.upload);
-//        upload.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent=new Intent(PhotoActivity.this,HomeActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        Button chooseFromAlbum = findViewById(R.id.choose_from_album);
-//        Button takePhoto = findViewById(R.id.take_photo);
-//        chooseFromAlbum.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (ContextCompat.checkSelfPermission(PhotoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=
-//                        PackageManager.PERMISSION_GRANTED){
-//                    ActivityCompat.requestPermissions(PhotoActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-//                }else{
-//                    openAlbum();
-//                }
-//            }
-//        });
-//
-//        takePhoto.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //创建File对象，用于存储拍照后的图片
-//
-//                File outputImage = new File(getExternalCacheDir(), "image.jpg");
-//                if (outputImage.exists()) {
-//                    outputImage.delete();
-//                }
-//                try {
-//                    outputImage.createNewFile();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                if (Build.VERSION.SDK_INT >= 24) {
-//                    imageUri = FileProvider.getUriForFile(PhotoActivity.this, "com.example.cameraalbumtest.fileprovider", outputImage);
-//                } else {
-//                    imageUri = Uri.fromFile(outputImage);
-//                }
-//                //启动相机程序
-//                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-//                startActivityForResult(intent, 1);
-//            }
-//        });
-//    }
-//
-//    private void openAlbum() {
-//        Intent intent = new Intent("android.intent.action.GET_CONTENT");
-//        intent.setType("image/*");
-//        startActivityForResult(intent,2);
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode) {
-//            case 1:
-//                if (resultCode == RESULT_OK) {
-//                    Bitmap bitmap = null;
-//                    try {
-//                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-//                        imageView.setImageBitmap(bitmap);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            case 2:
-//                if (resultCode==RESULT_OK){
-//                    //判断系统版本号 因为4.4以上系统不在返回图片真实Uri了，而是一个封装的Uri，所以如果是4.4以上需要对这个Uri解析
-//                    if (Build.VERSION.SDK_INT>=19){
-//                        handleImageOnKitKat(data);
-//                    }else{
-//                        handleImageBeforeKitKat(data);
-//                    }
-//                }
-//            default:
-//        }
-//    }
-//
-//    private void handleImageBeforeKitKat(Intent data) {
-//        Uri uri = data.getData();
-//        String imagePath = getImagePath(uri,null);
-//        displayImage(imagePath);
-//    }
-//
-//    @TargetApi(19)
-//    private void handleImageOnKitKat(Intent data) {
-//        String imagePath = null;
-//        Uri uri = data.getData();
-//
-//        if (DocumentsContract.isDocumentUri(this,uri)){
-//            //如果是document类型的uri 则通过document id处理
-//            String docId = DocumentsContract.getDocumentId(uri);
-//
-//            if ("com.android.providers.media.documents".equals(uri.getAuthority())){
-//
-//                // 解析出数字格式的id
-//                String id = docId.split(":")[1];
-//
-//                String selection = MediaStore.Images.Media._ID+"="+id;
-//
-//                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
-//
-//            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-//
-//                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
-//
-//                imagePath = getImagePath(contentUri,null);
-//            }
-//        }else if ("content".equalsIgnoreCase(uri.getScheme())){
-//
-//            //如果是content类型的Uri，则使用普通方式处理
-//
-//            imagePath = getImagePath(uri,null);
-//
-//        }else if("file".equalsIgnoreCase(uri.getScheme())){
-//
-//            //如果是file类型的Uri，则直接获取图片路径
-//            imagePath=  uri.getPath();
-//        }
-//        displayImage(imagePath);
-//    }
-//
-//    private void displayImage(String imagePath) {
-//        if (imagePath!=null){
-//            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-//            imageView.setImageBitmap(bitmap);
-//        }else{
-//            Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    public String getImagePath(Uri uri,String selection) {
-//        String path = null;
-//        //通过uri和selection来获取真实的图片路径
-//        Cursor cursor = getContentResolver().query(uri,null,selection,null,null);
-//        if (cursor!=null){
-//            if (cursor.moveToNext()){
-//                path=  cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-//            }
-//            cursor.close();
-//        }
-//        return path;
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch (requestCode){
-//            case 1:
-//                if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-//                    openAlbum();
-//                }else{
-//                    Toast.makeText(this, "没有权限", Toast.LENGTH_SHORT).show();
-//                }
-//                break;
-//        }
-//    }
-//
-//
-//}
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class PhotoActivity extends Activity {
 
     private static final int TAKE_PHOTO = 11;// 拍照
-    private static final int CROP_PHOTO = 12;// 裁剪图片
+    private static final int CROP_PHOTO_CAMERA = 8;// 裁剪拍好的图片
+    private static final int CROP_PHOTO_ABLUM = 9;  //裁剪相册中的
     private static final int LOCAL_CROP = 13;// 本地图库
 
     private Button choose_from_album;
     private Button take_photo;
     private ImageView picture;
     private Uri imageUri;// 拍照时的图片uri
+    public Handler handler;
 
-
+    private File tempFile;
+    public File pngfile;//最后转成的png文件
+    public Bitmap bitmap;
+    public final  int SUCCESS=1;
+    public final  int FAIL=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        handler=new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case SUCCESS:
+                        picture.setImageBitmap(bitmap);
+                        Toast.makeText(PhotoActivity.this,"获取成功",Toast.LENGTH_SHORT).show();
+                        break;
+                    case FAIL:
+                        Toast.makeText(PhotoActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
+            }
+        };
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         setViews();// 初始化控件
@@ -271,40 +105,73 @@ public class PhotoActivity extends Activity {
                 Intent intent1 = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 // 启动intent打开本地图库
-                startActivityForResult(intent1,LOCAL_CROP);
-
-
+                startActivityForResult(intent1, LOCAL_CROP);
             }
         });
 
         take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                File takePhotoImage = new File(Environment.getExternalStorageDirectory(), "take_photo_image.jpg");
-                try {
-                    // 文件存在，删除文件
-                    if(takePhotoImage.exists()){
-                        takePhotoImage.delete();
-                    }
-                    // 根据路径名自动的创建一个新的空文件
-                    takePhotoImage.createNewFile();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                // 获取图片文件的uri对象
-                imageUri = Uri.fromFile(takePhotoImage);
+                //获取系統版本
+                imageUri=null;
+                int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                SimpleDateFormat timeStampFormat = new SimpleDateFormat(
+                        "yyyy_MM_dd_HH_mm_ss");
+                String filename = timeStampFormat.format(new Date());
+                tempFile = new File(Environment.getExternalStorageDirectory(),
+                        filename + ".jpg");
                 // 创建Intent，用于启动手机的照相机拍照
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // 指定输出到文件uri中
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
-                // 启动intent开始拍照
-                startActivityForResult(intent, TAKE_PHOTO);
 
+//                File takePhotoImage = new File(Environment.getExternalStorageDirectory(), "take_photo_image.jpg");
+//                try {
+//                    // 文件存在，删除文件
+//                    if(takePhotoImage.exists()){
+//                        takePhotoImage.delete();
+//                    }
+//                    // 根据路径名自动的创建一个新的空文件
+//                    takePhotoImage.createNewFile();
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+                //有存储卡的权限
+                if (hasSdcard()) {
 
+                    // 从文件中创建uri
+                    Uri uri = Uri.fromFile(tempFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                    } else {
+//                        //兼容android7.0 使用共享文件的形式
+//                        ContentValues contentValues = new ContentValues(1);
+//                        contentValues.put(MediaStore.Images.Media.DATA, tempFile.getAbsolutePath());
+//                        Uri uri = getApplication().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                    }
+
+                    // 获取图片文件的uri对象
+                    imageUri = Uri.fromFile(tempFile);
+
+                    // 指定输出到文件uri中
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    // 启动intent开始拍照
+                    startActivityForResult(intent, TAKE_PHOTO);
+                }
+            }
+
+            /*
+//     * 判断sdcard是否被挂载
+//     */
+            private boolean hasSdcard() {
+                //判断ＳＤ卡手否是安装好的media_mounted
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
     }
+
 
     /**
      *
@@ -327,10 +194,12 @@ public class PhotoActivity extends Activity {
                     intent.setDataAndType(imageUri,"image/*");
                     // 允许裁剪
                     intent.putExtra("scale",true);
-                    // 指定输出到文件uri中
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                    // 裁剪后返回数据
+                    intent.putExtra("return-data", true);
+//                    // 指定输出到文件uri中
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
                     // 启动intent，开始裁剪
-                    startActivityForResult(intent, CROP_PHOTO);
+                    startActivityForResult(intent, CROP_PHOTO_CAMERA);
                 }
                 break;
             case LOCAL_CROP:// 系统图库
@@ -347,34 +216,67 @@ public class PhotoActivity extends Activity {
                     // 裁剪后返回数据
                     intent1.putExtra("return-data", true);
                     // 启动intent，开始裁剪
-                    startActivityForResult(intent1, CROP_PHOTO);
+                    startActivityForResult(intent1, CROP_PHOTO_ABLUM);
                 }
 
                 break;
-            case CROP_PHOTO:// 裁剪后展示图片
+            case CROP_PHOTO_ABLUM:
+                if(resultCode==RESULT_OK){
+                    try{
+                        bitmap = data.getExtras().getParcelable("data");
+                        pngfile=saveBitmapFile(bitmap);
+//                        new Thread(){
+//                            public void run(){
+//                                request();
+//                            }
+//                        }.start();
+                        request();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case CROP_PHOTO_CAMERA:// 裁剪后展示图片
                 if(resultCode == RESULT_OK){
                     try{
-                        // 展示拍照后裁剪的图片
                         if(imageUri != null){
                             // 创建BitmapFactory.Options对象
                             BitmapFactory.Options option = new BitmapFactory.Options();
                             // 属性设置，用于压缩bitmap对象
-                            option.inSampleSize = 2;
+                            option.inSampleSize = 4;
                             option.inPreferredConfig = Bitmap.Config.RGB_565;
                             // 根据文件流解析生成Bitmap对象
-                            Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri), null, option);
-                            // 展示图片
-                            picture.setImageBitmap(bitmap);
-                        }
-
+                            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri), null, option);
+//                            bitmap = data.getParcelableExtra("data");
+                            pngfile=saveBitmapFile(bitmap);
+                            request();
+//                            new Thread(){
+//                                public void run(){
+//                                    request();
+//                                }
+//                            }.start();
                         // 展示图库中选择裁剪后的图片
-                        if(data != null){
-                            // 根据返回的data，获取Bitmap对象
-                            Bitmap bitmap = data.getExtras().getParcelable("data");
-                            // 展示图片
-                            picture.setImageBitmap(bitmap);
+//                        if(data != null&&imageUri==null){
+//                            // 根据返回的data，获取Bitmap对象
+//                            bitmap = data.getExtras().getParcelable("data");
+//                            pngfile=saveBitmapFile(bitmap);
+//                            new Thread(){
+//                                public void run(){
+//                                    request();
+//                                }
+//                            }.start();
+//                            // 展示图片
+//                            picture.setImageBitmap(bitmap);
 
+//                        }
+
+                        // 展示拍照后裁剪的图片
+
+//                            // 展示图片
+//                            picture.setImageBitmap(bitmap);
                         }
+
+
 
                     }catch (Exception e){
                         e.printStackTrace();
@@ -385,7 +287,82 @@ public class PhotoActivity extends Activity {
         }
 
     }
+    public void request(){
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://100.67.109.140:8000/") // 设置 网络请求 Url
+                .baseUrl("http://120.76.62.132:80/")
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
 
+        // 步骤5:创建 网络请求接口 的实例
+        final PostRequest_Interface request = retrofit.create(PostRequest_Interface.class);
+//        String username="xue";
+//        String password="xue123456";
+//        String base=username+":"+password;
+//        String authorization="Basic "+Base64.encodeToString(base.getBytes(),Base64.NO_WRAP);
+        MediaType textType = MediaType.parse("text/plain");
+        RequestBody username = RequestBody.create(textType, "xue");
+        RequestBody password = RequestBody.create(textType, "xue123456");
+//
+
+        RequestBody files = RequestBody.create(MediaType.parse("application/octet-stream"),pngfile);
+//        RequestBody files = RequestBody.create(MediaType.parse("application/octet-stream"),pngfile);
+//
+        //对 发送请求 进行封装
+        Call<imageResponse> call = request.getImageResponseCall(username,password,files);
+
+        //步骤6:发送网络请求(异步)
+        call.enqueue(new Callback<imageResponse>() {
+            //请求成功时回调
+            @Override
+            public void onResponse(Call<imageResponse> call, Response<imageResponse> response) {
+
+                response.body();
+                System.out.print(response.body());
+                System.out.print(response.errorBody());
+                Message msg=new Message();
+
+                msg.obj=response.body();
+                msg.what=SUCCESS;
+                handler.sendMessage(msg);
+
+                // 步骤7：处理返回的数据结果
+                System.out.print("helloworld");
+                //response.body就是我声明的类
+            }
+
+            //请求失败时回调
+            @Override
+            public void onFailure(Call<imageResponse> call, Throwable throwable) {
+                Message msg=new Message();
+
+                msg.obj=null;
+                msg.what=FAIL;
+                handler.sendMessage(msg);
+                System.out.println("连接失败");
+            }
+        });
+    }
+
+    /**
+     //     * 把bitmap 转file
+     //     * @param bitmap
+     //
+     //     */
+    public static File saveBitmapFile(Bitmap bitmap){
+        File file=new File(Environment.getExternalStorageDirectory(),
+                "IMG_20190104_162811" + ".png");
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
     /**
      * 控件初始化
      */

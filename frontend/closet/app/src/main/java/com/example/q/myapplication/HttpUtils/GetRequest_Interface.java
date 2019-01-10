@@ -5,6 +5,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface GetRequest_Interface {
+    //获得天气
+    @GET("v3/weather/now.json?key=rp1jtnb6kembxgcj&location=shanghai&language=zh-Hans&unit=c")
+    Call<Weather>getWeatherCall();
     //收藏的get
     @GET("collections/")
     Call<Collections>getCollectionCall();
