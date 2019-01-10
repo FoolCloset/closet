@@ -25,6 +25,46 @@ public class ClosetActivity extends AppCompatActivity {
         coat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String type = "coat";
+                Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
+                intent.putExtra("type", type);
+                startActivity(intent);
+            }
+        });
+
+        Button jacket=findViewById(R.id.jacket);
+        jacket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button trousers=findViewById(R.id.trousers);
+        trousers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button shoes=findViewById(R.id.shoes);
+        shoes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String type="shoes";
+                Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
+                intent.putExtra("type",type);
+                startActivity(intent);
+            }
+        });
+        Button others=findViewById(R.id.others);
+        others.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String type="others";
                 Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
                 startActivity(intent);
             }

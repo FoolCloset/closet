@@ -16,8 +16,10 @@ public class ClothesSortActivity extends AppCompatActivity {
         ImageButton back_closet=(ImageButton)findViewById(R.id.back_closet);
         back_closet.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(ClothesSortActivity.this,ClosetActivity.class);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent=new Intent(ClothesSortActivity.this,SortDetailActivity.class);
+                String sort=List.get(i);
+                intent.putExtra("sort",sort);
                 startActivity(intent);
             }
         });
@@ -27,6 +29,8 @@ public class ClothesSortActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ClothesSortActivity.this,SortDetailActivity.class);
+                String sort=List.get(i);
+                intent.putExtra("sort",sort);
                 startActivity(intent);
             }
         });

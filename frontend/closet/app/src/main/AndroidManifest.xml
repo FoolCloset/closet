@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.q.myapplication">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:usesCleartextTraffic="true"
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,27 +24,24 @@
             android:name=".CollectionsActivity"
             android:label="@string/title_activity_collections"
             android:theme="@style/AppTheme" />
-        <activity android:name=".OcassionsActivity"></activity>
+        <activity android:name=".OcassionsActivity" />
 
-       <!--+<provider android:name="android.support.v4.content.FileProvider" android:grantUriPermissions="true" android:exported="false" android:authorities="${applicationId}.fileprovider"/>-->
+        <!-- +<provider android:name="android.support.v4.content.FileProvider" android:grantUriPermissions="true" android:exported="false" android:authorities="${applicationId}.fileprovider"/> -->
 
-        <activity android:name=".ClothesSortActivity"/>
-
-        <activity android:name=".SignUpActivity"/>
-
-        <activity android:name=".SignInActivity" android:label="@string/title_activity_signin"/>
-
-        <activity android:name=".PhotoActivity"/>
-
-        <activity android:name=".ClosetActivity"/>
-
-        <activity android:name=".HomeActivity" android:theme="@style/AppTheme" android:label="@string/title_activity_home"/>
-
-        <activity android:name=".SortDetailActivity" android:theme="@style/AppTheme" android:label="@string/title_activity_sort_detaill"/>
-
-        <activity android:name=".ClothesDetailActivity"/>
-
-        <activity android:name=".UserActivity"> </activity>
+        <activity android:name=".ClothesSortActivity" />
+        <activity android:name=".SignUpActivity" />
+        <activity
+            android:name=".SignInActivity"
+            android:label="@string/title_activity_signin" />
+        <activity android:name=".PhotoActivity" />
+        <activity android:name=".ClosetActivity" />
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ClothesDetailActivity" />
+        <activity android:name=".UserActivity" />
+        <activity android:name=".SortDetailActivity" />
     </application>
 
 </manifest>
