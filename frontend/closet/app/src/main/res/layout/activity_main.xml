@@ -36,7 +36,9 @@
                 android:layout_marginRight="40dp"
                 android:background="@drawable/shape"
                 android:gravity="center"
-                android:text="Sing in"
+
+                android:text="Sign in"
+
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold" />
 
