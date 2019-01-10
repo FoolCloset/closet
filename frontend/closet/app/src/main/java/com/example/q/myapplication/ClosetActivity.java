@@ -122,3 +122,4 @@ public class ClosetActivity extends AppCompatActivity {
         });
     }
 }
+

@@ -468,4 +468,5 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
     }
+
 }
