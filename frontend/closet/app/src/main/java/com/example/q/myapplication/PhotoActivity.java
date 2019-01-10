@@ -225,11 +225,12 @@ public class PhotoActivity extends Activity {
                     try{
                         bitmap = data.getExtras().getParcelable("data");
                         pngfile=saveBitmapFile(bitmap);
-                        new Thread(){
-                            public void run(){
-                                request();
-                            }
-                        }.start();
+//                        new Thread(){
+//                            public void run(){
+//                                request();
+//                            }
+//                        }.start();
+                        request();
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -242,17 +243,18 @@ public class PhotoActivity extends Activity {
                             // 创建BitmapFactory.Options对象
                             BitmapFactory.Options option = new BitmapFactory.Options();
                             // 属性设置，用于压缩bitmap对象
-                            option.inSampleSize = 2;
+                            option.inSampleSize = 4;
                             option.inPreferredConfig = Bitmap.Config.RGB_565;
                             // 根据文件流解析生成Bitmap对象
                             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri), null, option);
 //                            bitmap = data.getParcelableExtra("data");
                             pngfile=saveBitmapFile(bitmap);
-                            new Thread(){
-                                public void run(){
-                                    request();
-                                }
-                            }.start();
+                            request();
+//                            new Thread(){
+//                                public void run(){
+//                                    request();
+//                                }
+//                            }.start();
                         // 展示图库中选择裁剪后的图片
 //                        if(data != null&&imageUri==null){
 //                            // 根据返回的data，获取Bitmap对象
@@ -288,7 +290,8 @@ public class PhotoActivity extends Activity {
     public void request(){
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.31.234:8000/") // 设置 网络请求 Url
+//                .baseUrl("http://100.67.109.140:8000/") // 设置 网络请求 Url
+                .baseUrl("http://120.76.62.132:80/")
                 .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
                 .build();
 
@@ -301,13 +304,13 @@ public class PhotoActivity extends Activity {
         MediaType textType = MediaType.parse("text/plain");
         RequestBody username = RequestBody.create(textType, "xue");
         RequestBody password = RequestBody.create(textType, "xue123456");
-//        RequestBody name = RequestBody.create("text","11");
-//        RequestBody age = RequestBody.create(MediaType.parse("text"), "24");
-        RequestBody files = RequestBody.create(MediaType.parse("multipart/form-data"),pngfile);
+//
+
+        RequestBody files = RequestBody.create(MediaType.parse("application/octet-stream"),pngfile);
 //        RequestBody files = RequestBody.create(MediaType.parse("application/octet-stream"),pngfile);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("FILES", "file", files);
+//
         //对 发送请求 进行封装
-        Call<imageResponse> call = request.getImageResponseCall(username,password,filePart);
+        Call<imageResponse> call = request.getImageResponseCall(username,password,files);
 
         //步骤6:发送网络请求(异步)
         call.enqueue(new Callback<imageResponse>() {
@@ -316,6 +319,8 @@ public class PhotoActivity extends Activity {
             public void onResponse(Call<imageResponse> call, Response<imageResponse> response) {
 
                 response.body();
+                System.out.print(response.body());
+                System.out.print(response.errorBody());
                 Message msg=new Message();
 
                 msg.obj=response.body();

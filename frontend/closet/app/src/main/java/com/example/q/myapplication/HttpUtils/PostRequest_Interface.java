@@ -17,5 +17,5 @@ public interface PostRequest_Interface {
     @POST("upload/")
     @Multipart
     Call<imageResponse>getImageResponseCall(@Part("username") RequestBody name, @Part("password")RequestBody password,
-                                            @Part MultipartBody.Part file);
+                                            @Part("file\";filename=\"file.png\"") RequestBody file);
 }
