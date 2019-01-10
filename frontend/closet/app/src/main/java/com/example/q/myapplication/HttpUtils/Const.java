@@ -5,6 +5,7 @@ import android.util.Base64;
 public  class Const {
     public static String username;
     public static String password;
+    public static String userid;
     public static final  String url="http://192.168.31.234:8000/";
     public static final  String weather_url="https://api.seniverse.com/";
     public static String temperature;

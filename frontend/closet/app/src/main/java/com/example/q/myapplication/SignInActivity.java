@@ -77,13 +77,17 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                     attemptLogin();
+
                     Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
                     startActivity(intent);
+
+
                     return true;
                 }
                 return false;
             }
         });
+
         Button SignInButton = (Button) findViewById(R.id.sign_in_button);
         SignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -93,6 +97,7 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
                 startActivity(intent);
             }
         });
+
         Button GotoSignUpButton=findViewById(R.id.goto_sign_up_button);
         GotoSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -101,6 +106,7 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
                 startActivity(intent);
             }
         });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -358,4 +364,3 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
         }
     }
 }
-

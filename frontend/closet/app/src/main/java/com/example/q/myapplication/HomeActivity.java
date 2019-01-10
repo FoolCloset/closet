@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.q.myapplication.HttpUtils.Const;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,6 +57,8 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         mTextMessage = (TextView) findViewById(R.id.message);
+        TextView weather=(TextView)findViewById(R.id.textView5);
+        weather.setText("\r\n今日天气："+Const.weathertext+"天\r\n\r\n"+"今日温度："+Const.temperature+"℃\r\n");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
