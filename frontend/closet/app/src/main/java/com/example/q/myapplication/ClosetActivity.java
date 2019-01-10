@@ -19,39 +19,37 @@ public class ClosetActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(ClosetActivity.this,HomeActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
         Button coat=findViewById(R.id.coat);
         coat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String type="coat";
+                String type = "coat";
                 Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
-                intent.putExtra("type",type);
+                intent.putExtra("type", type);
                 startActivity(intent);
             }
         });
+
         Button jacket=findViewById(R.id.jacket);
         jacket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String type="jacket";
                 Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
-                intent.putExtra("type",type);
                 startActivity(intent);
             }
         });
+
         Button trousers=findViewById(R.id.trousers);
         trousers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String type="trousers";
                 Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
-                intent.putExtra("type",type);
                 startActivity(intent);
             }
         });
+
         Button shoes=findViewById(R.id.shoes);
         shoes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +66,6 @@ public class ClosetActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String type="others";
                 Intent intent=new Intent(ClosetActivity.this,ClothesSortActivity.class);
-                intent.putExtra("type",type);
                 startActivity(intent);
             }
         });

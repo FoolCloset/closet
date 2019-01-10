@@ -30,6 +30,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +90,9 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                     attemptLogin();
-                    Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
-                    startActivity(intent);
+//                    Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
+//                    startActivity(intent);
+
                     return true;
                 }
                 return false;
@@ -154,7 +168,11 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+
+    private boolean attemptLogin() {
+        if(readLocalFile("user-info")){
+            return true;
+        }
         if (mAuthTask != null) {
             return;
         }
@@ -344,6 +362,13 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             showProgress(false);
 
             if (success) {
+
+//                finish();
+                Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                finish();
+                startActivity(intent);
+
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -356,6 +381,34 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private boolean readLocalFile(String file_name){
+        try{
+            String DIR_NAME = "";
+//            String FILE_NAME = "test";
+            String dir_path = getCacheDir().getAbsolutePath();
+//            String dir_path = Environment.getDataDirectory().getAbsoluteFile().getAbsolutePath()
+//                    + File.separator + DIR_NAME;
+            File file = new File(dir_path);
+            file = new File(dir_path + File.separator + file_name);
+            FileInputStream fis = new FileInputStream(file);
+            FileOutputStream fos = new FileOutputStream(file, true);
+            InputStreamReader file_reader = new InputStreamReader(fis, "UTF-8");
+            char[] input = new char[fis.available()];
+            file_reader.read(input);
+            file_reader.close();
+            fis.close();
+            String data = new String(input);
+            System.out.println(data);
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+            return false;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
 

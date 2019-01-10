@@ -104,8 +104,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         signupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(SignUpActivity.this,SignInActivity.class);
-                startActivity(intent);
+
+//                writeLocalFile("test", "may");
+                readLocalFile("user-info");
+                try {
+                    attemptSignup();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+//                if(attemptSignup()) {
+//                    Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(intent);
+//                }
+
+
             }
         });
         mFragmentAdapter = new FragmentAdapter(this.getSupportFragmentManager(), mFragmentList);
@@ -385,24 +398,200 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUser;
-        private final String mPassword;
 
-        UserLoginTask(String user, String password) {
-            mUser = user;
-            mPassword = password;
+    private boolean attemptSignup() throws InterruptedException {
+//        check if the value is valid
+//        返回一个JSONObject，email或者phone如果没有就传空字符串
+        JSONObject json_data = new JSONObject();
+//        Map<String,String> map = new HashMap<String, String>();
+//        这个只是一个实例，我是要给你们看怎么加东西
+//        String username = vp.toString();
+        String username = "may12";
+        String password = "may123";
+        String phone = "18916234567";
+        String email = "http://120.76.62.132:80/img/6_8.png";
+        String profile = "";
+        String style = "casual";
+
+//        String data = "";
+        try{
+            json_data.put("username", username);
+            json_data.put("password", password);
+            json_data.put("phone", phone);
+            json_data.put("email", email);
+            json_data.put("profile", profile);
+            json_data.put("style", style);
+            data = json_data.toString();
+//            String data = json
+        }catch (JSONException e){
+            e.printStackTrace();
         }
+// 后面data转成String类型
+
+//        if(sendSignUpRequest(data)){
+//            System.out.println("ok");
+//            return true;
+//        }else{
+//            return false;
+//        }
+        Thread thread = new Thread(runnable);
+        thread.start();
+//            thread.join();
+        return true;
+    }
+
+    public String request(){
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://120.76.62.132:80/") // 设置 网络请求 Url
+//                .baseUrl("http://127.0.0.1:8000/")
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final UsersPostRequest_Interface request = retrofit.create(UsersPostRequest_Interface.class);
+        JSONObject object = null;
+        users user = new users();
+        MediaType textType = MediaType.parse("application/json");
+        try {
+            object = new JSONObject(data);
+            user.setId(1);
+            user.setEmail(object.getString("email"));
+            user.setPhone(object.getString("phone"));
+            user.setProfile(object.getString("profile"));
+            user.setStyle(object.getString("style"));
+            user.setUsername(object.getString("username"));
+            user.setPassword(object.getString("password"));
+//            RequestBody username = RequestBody.create(textType, object.getString("username"));
+//            RequestBody password = RequestBody.create(textType, object.getString("password"));
+//            RequestBody profile = RequestBody.create(textType, object.getString("profile"));
+//            RequestBody style = RequestBody.create(textType, object.getString("style"));
+//            RequestBody email = RequestBody.create(textType, object.getString("email"));
+//            RequestBody phone = RequestBody.create(textType, object.getString("phone"));
+
+            //对 发送请求 进行封装
+            Call<sign> call = request.getCall(user);
+            Response<sign> response = call.execute();
+            sign result_sign = response.body();
+            if(result_sign != null){
+                String result = result_sign.getDataString();
+                writeLocalFile("user-info", result);
+                System.out.println("request call");
+                return "ok";
+            }else{
+                if(response.errorBody() != null){
+                    return response.errorBody().string();
+                }
+                return "error";
+            }
+//            new Thread(){call.execute().body();}.start();
+
+
+////            步骤6:发送网络请求(异步)
+//            call.enqueue(new Callback<sign>() {
+//                //请求成功时回调
+//                @Override
+//                public void onResponse(Call<sign> call, Response<sign> response) {
+//                    String a;
+////                    response.body();
+//                    // 步骤7：处理返回的数据结果
+//                    if(response.body() != null){
+//                        response.body().show();
+//                    }else{
+//                        try {
+//                            String err_msg = response.errorBody().string();
+//                            Log.i("code", err_msg);
+//                            System.out.println(err_msg);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    System.out.println("hello world");
+//                    //response.body就是我声明的类
+//                }
+//
+//                //请求失败时回调
+//                @Override
+//                public void onFailure(Call<sign> call, Throwable throwable) {
+//                    System.out.println("fail to connect");
+//                }
+//            });
+
+        }catch (JSONException e){
+            e.printStackTrace();
+            return "error";
+        }catch (IOException e){
+            e.printStackTrace();
+            return "error";
+        }
+//        String username="xue";
+//        String password="xue123456";
+//        String base=username+":"+password;
+//        String authorization="Basic "+ Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+//        RequestBody username = RequestBody.create(textType, object.getString("username"));
+//        RequestBody match = RequestBody.create(textType, "1");
+//        RequestBody name = RequestBody.create("text","11");
+//        RequestBody age = RequestBody.create(MediaType.parse("text"), "24");
+//        return "ok";
+    }
+      
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+        public void run() {
+            try{
+                String result = request();
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putString("result", result);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }catch (Exception e){
+                e.printStackTrace();
             }
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String result = data.getString("result");
+            System.out.println("result: "+result);
+            if(result == "ok"){
+                Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }else if(result == "error" || result == ""){
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "注册失败，请检测网络是否正常", Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        result, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+//            tv_request_result.setText(result);
+        }
+    };
+
+    private boolean sendSignUpRequest(final String data){
+        PostRunThread sign_up_thread = new PostRunThread("sign-up", data);
+        sign_up_thread.start();
+        try{
+            sign_up_thread.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+//        sign_up_thread.run();
+        if(sign_up_thread.getRunLog().toLowerCase() != "ok"){
+            return false;
+        }else{
+            System.out.println(sign_up_thread.getRunLog());
+        }
+        return true;
+    }
 
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
