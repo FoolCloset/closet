@@ -78,32 +78,12 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="1dp"
-                android:orientation="horizontal">
+            <Spinner
+                android:id="@+id/s_main_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-
-                    android:hint="Style"
-                    android:textColor="#ABABAB"
-                    android:textSize="17dp" />
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="20dp"
-
-                    android:entries="@array/style">
-
-                </Spinner>
-            </LinearLayout>
+                android:entries="@array/name"></Spinner>
 
         </LinearLayout>
     </ScrollView>

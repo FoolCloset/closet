@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,12 +19,22 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.q.myapplication.HttpUtils.Const;
+import com.example.q.myapplication.Retrofit.matches.DailyMatchGetRequest_Interface;
+import com.example.q.myapplication.Retrofit.matches.matches;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Context context;
+    private boolean clothes_flag = true;
 
     private TextView mTextMessage;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -34,12 +43,11 @@ public class HomeActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Intent intent1 = new Intent(HomeActivity.this,HomeActivity.class);
-                    startActivity(intent1);
+//                    Intent intent1 = new Intent(HomeActivity.this,HomeActivity.class);
+//                    startActivity(intent1);
                     return true;
                 case R.id.navigation_changhe:
                  Intent intent2 = new Intent(HomeActivity.this,OcassionsActivity.class);
-
                     startActivity(intent2);
                     return true;
                 case R.id.navigation_photo:
@@ -52,13 +60,19 @@ public class HomeActivity extends AppCompatActivity
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        加上请求每日搭配的请求
+//         @SuppressLint("HandlerLeak") private static Handler handler = new Handler(){
+//            public void handleMessage(Message msg){
+//                switch (msg.what){
+//                    case 200:
+//                }
+//            }
+//        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         mTextMessage = (TextView) findViewById(R.id.message);
-        TextView weather=(TextView)findViewById(R.id.textView5);
-        weather.setText("\r\n今日天气："+Const.weathertext+"天\r\n\r\n"+"今日温度："+Const.temperature+"℃\r\n");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -72,6 +86,12 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        if(clothes_flag){
+            request();
+            clothes_flag = false;
+        }
 
         final ImageButton like = (ImageButton)findViewById(R.id.likebutton);
         like.setImageResource(R.drawable.noheart);
@@ -172,5 +192,51 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void request(){
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://120.76.62.132:80/") // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final DailyMatchGetRequest_Interface request = retrofit.create(DailyMatchGetRequest_Interface.class);
+        String username="xue";
+        String password="xue123456";
+        String base=username+":"+password;
+        String authorization="Basic "+Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        MediaType textType = MediaType.parse("text/plain");
+        RequestBody user = RequestBody.create(textType, "11");
+        RequestBody match = RequestBody.create(textType, "1");
+//        RequestBody name = RequestBody.create("text","11");
+//        RequestBody age = RequestBody.create(MediaType.parse("text"), "24");
+
+
+        //对 发送请求 进行封装
+        Call<matches> call = request.getCall();
+        System.out.println("request call");
+
+
+        //步骤6:发送网络请求(异步)
+        call.enqueue(new Callback<matches>() {
+            //请求成功时回调
+            @Override
+            public void onResponse(Call<matches> call, Response<matches> response) {
+                String a;
+                response.body();
+                // 步骤7：处理返回的数据结果
+                System.out.println("hello world");
+//                response.body().show();
+                //response.body就是我声明的类
+            }
+
+            //请求失败时回调
+            @Override
+            public void onFailure(Call<matches> call, Throwable throwable) {
+                System.out.println("连接失败");
+            }
+        });
     }
 }

@@ -19,6 +19,7 @@ public class SubCollectionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SubCollectionActivity.this, CollectionsActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

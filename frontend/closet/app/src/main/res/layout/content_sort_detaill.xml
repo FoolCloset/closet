@@ -26,14 +26,14 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/clothes" />
+                android:src="@drawable/dust_coat" />
 
             <ImageButton
                 android:id="@+id/cloth2"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/match" />
+                android:src="@drawable/dust_coat" />
 
         </LinearLayout>
 
@@ -48,14 +48,14 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/clothesss" />
+                android:src="@drawable/dust_coat" />
 
             <ImageButton
                 android:id="@+id/cloth4"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/match" />
+                android:src="@drawable/dust_coat" />
 
         </LinearLayout>
 
@@ -70,14 +70,14 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/clothesss" />
+                android:src="@drawable/dust_coat" />
 
             <ImageButton
                 android:id="@+id/cloth6"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/clothes" />
+                android:src="@drawable/dust_coat" />
 
         </LinearLayout>
 
@@ -99,7 +99,7 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/pic1" />
+                android:src="@drawable/dust_coat" />
 
         </LinearLayout>
 
