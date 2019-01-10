@@ -52,16 +52,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
+        //获取天气
+        new Thread(){
+            public  void run(){
+                request();
+            }
+        }.start();
         signinbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //登录的时候为用户获取天气情况//
-                new Thread(){
-                    public void run(){
-                        request();
-                    }
-                }.start();
+
                 Intent intent=new Intent(MainActivity.this,SignInActivity.class);
                 startActivity(intent);
             }
