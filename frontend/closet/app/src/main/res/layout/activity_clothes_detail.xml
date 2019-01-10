@@ -13,37 +13,22 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/back_sort_detail"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="5dp"
-                android:background="#00000000"
-                android:src="@drawable/left" />
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="5dp"
-                android:background="#00000000"
-                app:srcCompat="@drawable/shanchu" />
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/back_sort_detail"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_margin="5dp"
+            android:background="#00000000"
+            android:src="@drawable/left" />
 
         <LinearLayout
-            android:layout_width="368dp"
+            android:layout_width="329dp"
             android:layout_height="500dp"
-
-            android:layout_marginLeft="2dp"
+            android:layout_gravity="center"
             android:background="@drawable/shape"
-            android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
             tools:layout_editor_absoluteX="28dp"
             tools:layout_editor_absoluteY="87dp">
 
@@ -52,15 +37,14 @@
                 android:layout_width="221dp"
                 android:layout_height="230dp"
                 android:layout_gravity="center"
-                android:layout_margin="15dp"
-                android:src="@drawable/pic3"
-                app:srcCompat="@drawable/blue_suit" />
+                android:layout_margin="25dp"
+
+                app:srcCompat="@drawable/winter_coat" />
 
             <LinearLayout
-                android:layout_width="350dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:background="@drawable/shape"
                 android:orientation="vertical"
                 tools:layout_editor_absoluteX="8dp"
@@ -68,30 +52,25 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
+                    android:layout_height="50dp"
                     android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/style"
-                        android:layout_width="1dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="2dp"
                         android:layout_weight="1"
                         android:background="#00000000"
-                        android:text="风格"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:gravity="center_vertical|left"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="风格" />
 
-                    <Spinner
-                        android:id="@+id/spinner_style"
-                        android:layout_width="180dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="20dp"
-
-                        android:entries="@array/style">
-
-                    </Spinner>
-
-
+                    <ImageButton
+                        android:id="@+id/edit_style"
+                        android:layout_width="80px"
+                        android:layout_height="80px"
+                        android:background="#00000000"
+                        android:src="@drawable/write" />
                 </LinearLayout>
 
                 <View
@@ -106,46 +85,20 @@
 
                     <EditText
                         android:id="@+id/button2"
-                        android:layout_width="1dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#00000000"
                         android:gravity="center_vertical|left"
-                        android:text="标签"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="标签" />
 
-                    <Spinner
-                        android:id="@+id/spinner_label"
-                        android:layout_width="100dp"
-                        android:layout_height="match_parent"
-
-
-                        android:entries="@array/style">
-
-                    </Spinner>
-
-                    <EditText
-                        android:id="@+id/button3"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
-                        android:layout_weight="1"
+                    <ImageButton
+                        android:id="@+id/btn_write2"
+                        android:layout_width="80px"
+                        android:layout_height="80px"
                         android:background="#00000000"
-                        android:gravity="center_vertical|left"
-                        android:text="季节"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <Spinner
-                        android:id="@+id/spinner_season"
-                        android:layout_width="100dp"
-                        android:layout_height="40dp"
-
-
-                        android:entries="@array/style">
-
-                    </Spinner>
-
-
+                        android:src="@drawable/write" />
                 </LinearLayout>
 
                 <View
@@ -158,53 +111,23 @@
                     android:layout_height="50dp"
                     android:orientation="horizontal">
 
-
                     <EditText
-                        android:id="@+id/button4"
-                        android:layout_width="1dp"
+                        android:id="@+id/button3"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#00000000"
                         android:gravity="center_vertical|left"
-                        android:text="样式"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="季节" />
 
-                    <Spinner
-                        android:id="@+id/spinner_pattern"
-                        android:layout_width="100dp"
-                        android:layout_height="match_parent"
-
-
-                        android:entries="@array/style">
-
-                    </Spinner>
-
-                    <EditText
-                        android:id="@+id/button5"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
-                        android:layout_weight="1"
+                    <ImageButton
+                        android:id="@+id/btn_write3"
+                        android:layout_width="80px"
+                        android:layout_height="80px"
                         android:background="#00000000"
-                        android:gravity="center_vertical|left"
-                        android:text="颜色"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <Spinner
-                        android:id="@+id/spinner_color"
-                        android:layout_width="100dp"
-                        android:layout_height="match_parent"
-
-
-                        android:entries="@array/style">
-
-                    </Spinner>
+                        android:src="@drawable/write" />
                 </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#22000000" />
 
             </LinearLayout>
 
