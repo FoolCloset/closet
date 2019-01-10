@@ -34,6 +34,7 @@ public class CollectionsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(CollectionsActivity.this, HomeActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 

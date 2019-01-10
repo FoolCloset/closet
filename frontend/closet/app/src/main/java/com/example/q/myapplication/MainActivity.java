@@ -34,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button signinbtn=findViewById(R.id.signinbutton);
+        final Button signinbtn=findViewById(R.id.signinbutton);
         Button signupbtn=findViewById(R.id.signupbutton);
+
         handler=new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
 
         signinbtn.setOnClickListener(new View.OnClickListener() {
             @Override

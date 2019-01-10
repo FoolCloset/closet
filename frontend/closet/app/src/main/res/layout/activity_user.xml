@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -37,7 +38,8 @@
                 android:layout_height="300px"
                 android:layout_gravity="center"
                 android:layout_margin="25dp"
-                android:src="@drawable/pic3" />
+
+                app:srcCompat="@drawable/dust_coat" />
 
             <LinearLayout
                 android:layout_width="250dp"
@@ -60,8 +62,8 @@
                         android:layout_weight="1"
                         android:background="#00000000"
                         android:gravity="center_vertical|left"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:text="用户名" />
+                        android:text="用户名"
+                        android:textColor="@color/colorPrimaryDark" />
 
                     <ImageButton
                         android:id="@+id/btn_write1"
@@ -88,8 +90,8 @@
                         android:layout_weight="1"
                         android:background="#00000000"
                         android:gravity="center_vertical|left"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:text="密码" />
+                        android:text="密码"
+                        android:textColor="@color/colorPrimaryDark" />
 
                     <ImageButton
                         android:id="@+id/btn_write2"
@@ -116,8 +118,8 @@
                         android:layout_weight="1"
                         android:background="#00000000"
                         android:gravity="center_vertical|left"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:text="phone/email" />
+                        android:text="phone/email"
+                        android:textColor="@color/colorPrimaryDark" />
 
                     <ImageButton
                         android:id="@+id/btn_write3"
@@ -127,6 +129,32 @@
                         android:src="@drawable/write" />
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal">
+
+                <Button
+
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="确定" />
+
+                <Button
+                    android:layout_marginLeft="120dp"
+                    android:id="@+id/button4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape"
+                    android:text="取消"
+                    android:textColor="@color/colorPrimaryDark" />
             </LinearLayout>
 
         </LinearLayout>
