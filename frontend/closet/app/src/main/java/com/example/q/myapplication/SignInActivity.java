@@ -77,8 +77,11 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                     attemptLogin();
+
                     Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
                     startActivity(intent);
+
+
                     return true;
                 }
                 return false;
@@ -112,6 +115,7 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
         if (!mayRequestContacts()) {
             return;
         }
+
         getLoaderManager().initLoader(0, null, this);
     }
 

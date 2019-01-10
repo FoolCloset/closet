@@ -26,14 +26,14 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/clothes" />
 
             <ImageButton
                 android:id="@+id/cloth2"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/match" />
 
         </LinearLayout>
 
@@ -48,14 +48,14 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/clothesss" />
 
             <ImageButton
                 android:id="@+id/cloth4"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/match" />
 
         </LinearLayout>
 
@@ -70,14 +70,14 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/clothesss" />
 
             <ImageButton
                 android:id="@+id/cloth6"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/clothes" />
 
         </LinearLayout>
 
@@ -99,7 +99,7 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_margin="25dp"
-                android:src="@drawable/dust_coat" />
+                android:src="@drawable/pic1" />
 
         </LinearLayout>
 
