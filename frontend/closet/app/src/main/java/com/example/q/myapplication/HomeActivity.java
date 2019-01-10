@@ -58,7 +58,8 @@ public class HomeActivity extends AppCompatActivity
         toolbar.setTitle("");
         mTextMessage = (TextView) findViewById(R.id.message);
         TextView weather=(TextView)findViewById(R.id.textView5);
-        weather.setText("\r\n今日天气："+Const.weathertext+"天\r\n\r\n"+"今日温度："+Const.temperature+"℃\r\n");
+        weather.setText("\r\n今日天气："+Const.weathertext+"\r\n\r\n"+"今日温度："+Const.temperature+"℃\r\n");
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
