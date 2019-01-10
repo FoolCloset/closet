@@ -30,16 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-
-import library.HttpUtil;
-
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -57,9 +49,9 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
-//    private static final String[] DUMMY_CREDENTIALS = new String[]{
-//            "foo@example.com:hello", "bar@example.com:world"
-//    };
+    private static final String[] DUMMY_CREDENTIALS = new String[]{
+            "foo@example.com:hello", "bar@example.com:world"
+    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -84,43 +76,31 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-//                    attemptLogin();
-
+                    attemptLogin();
                     Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
                     startActivity(intent);
-
-
                     return true;
                 }
                 return false;
             }
         });
-
         Button SignInButton = (Button) findViewById(R.id.sign_in_button);
         SignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
-//                Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
-//                startActivity(intent);
-//                if(attemptLogin()){
-//                    Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
-//                    startActivity(intent);
-//                }
+                Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
+                startActivity(intent);
             }
         });
-
         Button GotoSignUpButton=findViewById(R.id.goto_sign_up_button);
         GotoSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent=new Intent(SignInActivity.this,SignUpActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
-
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -174,9 +154,9 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private boolean attemptLogin() {
+    private void attemptLogin() {
         if (mAuthTask != null) {
-            return false;
+            return;
         }
 
         // Reset errors.
@@ -191,7 +171,7 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if(TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -212,33 +192,23 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-            return false;
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(user, password);
             mAuthTask.execute((Void) null);
-//            return true;
         }
-        return true;
     }
 
     private boolean isUserValid(String user) {
         //TODO: Replace this with your own logic
-//        return user.length() > 1;
-        if(user.length() < 3 | user.length() > 16){
-            return false;
-        }
-        String name_pattern = "^[\\u4e00-\\u9fa5_a-zA-z0-9]{3,16}$";
-        return user.matches(name_pattern);
+        return user.length() > 1;
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        String password_pattern = "^([A-Z]|[a-z]|[0-9]|[`~!@#$%^&*()+=|{}':;',.<>?~]){6,20}$";
-        return password.matches(password_pattern);
-//        return password.length() > 4;
+        return password.length() > 4;
     }
 
     /**
@@ -351,41 +321,18 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
 
             try {
                 // Simulate network access.
-                Thread.sleep(2);
-                String host_ip = "120.76.62.132:80";
-                String URL = "http://" + host_ip + "/sign-in/";
-//                String para = "{\"username\":\"" + mUser + "\",\"password\":\"" + mPassword + "\"}";
-                JSONObject json_para = new JSONObject();
-                json_para.put("username", mUser);
-                json_para.put("password", mPassword);
-                String detail = HttpUtil.executePostMethod(URL, json_para);
-                JSONObject result_object = null;
-                try{
-                    result_object  = new JSONObject(detail);
-
-                }catch (JSONException e){
-                    e.printStackTrace();
-                    return false;
-                }
-//                JSONArray result = result_object.optJSONArray("results");
-
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
-                return false;
-            } catch (SocketTimeoutException e) {
-                e.printStackTrace();
-                return false;
-            } catch (JSONException e) {
-                e.printStackTrace();
                 return false;
             }
 
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mUser)) {
-//                    // Account exists, return true if the password matches.
-//                    return pieces[1].equals(mPassword);
-//                }
-//            }
+            for (String credential : DUMMY_CREDENTIALS) {
+                String[] pieces = credential.split(":");
+                if (pieces[0].equals(mUser)) {
+                    // Account exists, return true if the password matches.
+                    return pieces[1].equals(mPassword);
+                }
+            }
 
             // TODO: register the new account here.
             return true;
@@ -397,12 +344,6 @@ public class SignInActivity extends AppCompatActivity implements LoaderCallbacks
             showProgress(false);
 
             if (success) {
-//                finish();
-                Intent intent=new Intent(SignInActivity.this,HomeActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                finish();
-                startActivity(intent);
-                startActivity(new Intent(SignInActivity.this, HomeActivity.class));
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

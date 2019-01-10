@@ -8,8 +8,6 @@
     <!--设置圆角-->
     <corners android:radius="10dip" />
 
-
-
     <!--<padding-->
     <!--android:bottom="10dp"-->
     <!--android:left="10dp"-->

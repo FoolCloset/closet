@@ -27,14 +27,6 @@ public class ClothesSortActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            Intent intent = getIntent();
-            String type = intent.getStringExtra("type");
-            System.out.println(type);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
         setContentView(R.layout.activity_clothes_sort);
         listView = (ListView) findViewById(R.id.listView1);
         Intent intent=getIntent();
@@ -74,8 +66,9 @@ public class ClothesSortActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent=new Intent(ClothesSortActivity.this,SortDetailActivity.class);
+                String sort=List.get(i);
+                intent.putExtra("sort",sort);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -83,6 +76,8 @@ public class ClothesSortActivity extends AppCompatActivity {
             @Override
             public void onDeleteClick(int i) {
                 Intent intent=new Intent(ClothesSortActivity.this,SortDetailActivity.class);
+                String sort=List.get(i);
+                intent.putExtra("sort",sort);
                 startActivity(intent);
             }
         });

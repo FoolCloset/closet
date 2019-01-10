@@ -10,7 +10,7 @@
 
     <string name="prompt_email">Email</string>
 
-    <string name="prompt_password">Password</string>
+    <string name="prompt_password">Password </string>
 
     <string name="action_sign_in">Sign in or register</string>
 
@@ -47,7 +47,6 @@
     <string name="nav_header_desc">Navigation header</string>
 
 
-
     <string name="title_activity_sort_detaill">SortDetaillActivity</string>
 
     <string name="action_settings">Settings</string>
@@ -57,12 +56,15 @@
     <string name="title_activity_sign_up">SignUpActivity</string>
 
     <string name="section_format">Hello World from section: %1$d</string>
-    <string-array name="name">
-        <item>choose style</item>
-        <item>阳光大男孩</item>
-        <item>时尚潮男</item>
-        <item>居家乖宝宝</item>
-        <item>成功人士</item>
-        <item>玩酷少年</item>
+    <string name="sign_up"><u>sign up</u></string>
+    <string name="sing_in">Sing in</string>
+
+    <string-array name="style">
+        <item> </item>
+        <item>清爽阳光</item>
+        <item>成熟稳重</item>
+        <item>居家可爱</item>
+        <item>日系休闲</item>
+        <item>时尚潮流</item>
     </string-array>
 </resources>
