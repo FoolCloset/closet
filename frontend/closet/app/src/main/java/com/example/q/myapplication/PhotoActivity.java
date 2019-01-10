@@ -255,7 +255,7 @@ public class PhotoActivity extends Activity {
 //                                    request();
 //                                }
 //                            }.start();
-                        // 展示图库中选择裁剪后的图片
+                            // 展示图库中选择裁剪后的图片
 //                        if(data != null&&imageUri==null){
 //                            // 根据返回的data，获取Bitmap对象
 //                            bitmap = data.getExtras().getParcelable("data");
@@ -270,7 +270,7 @@ public class PhotoActivity extends Activity {
 
 //                        }
 
-                        // 展示拍照后裁剪的图片
+                            // 展示拍照后裁剪的图片
 
 //                            // 展示图片
 //                            picture.setImageBitmap(bitmap);

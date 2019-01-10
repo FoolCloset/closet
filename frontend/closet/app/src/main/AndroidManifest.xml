@@ -48,5 +48,4 @@
 
         <activity android:name=".UserActivity"> </activity>
     </application>
-
 </manifest>

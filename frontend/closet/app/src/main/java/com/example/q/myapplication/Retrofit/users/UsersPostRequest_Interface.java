@@ -23,8 +23,4 @@ public interface UsersPostRequest_Interface {
 
     @POST("sign-up/")
     Call<sign> getCall(@Body users para);
-
-    @POST("sign-up/")
-    @Multipart
-    Call<sign> getMultiCall(@Part users para);
 }

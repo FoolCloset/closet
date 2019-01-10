@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -26,8 +25,8 @@ SECRET_KEY = 'vaey4oon^nz-c)1++^f=bla(vs(8cgib@q!u!xek(gc+z!_)4-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['120.76.62.132', '127.0.0.1', 'localhost', ]
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['120.76.62.132', '127.0.0.1', 'localhost', ]
+
 PHOTO_HOST = '120.76.62.132'
 
 
@@ -153,5 +152,8 @@ MEDIA_URL = '/media/'
 
 IMG_ROOT = os.path.join(STATIC_ROOT, "img/")
 IMG_URL = '/img/'
+
+RECOGNITION_ROOT = os.path.join(STATIC_ROOT, "recognition/")
+RECOGNITION_URL = '/recognition/'
 
 
