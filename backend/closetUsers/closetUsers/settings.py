@@ -154,4 +154,7 @@ MEDIA_URL = '/media/'
 IMG_ROOT = os.path.join(STATIC_ROOT, "img/")
 IMG_URL = '/img/'
 
+RECOGNITION_ROOT = os.path.join(STATIC_ROOT, "recognition/")
+RECOGNITION_URL = '/recognition/'
+
 
