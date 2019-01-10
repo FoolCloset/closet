@@ -67,8 +67,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         signupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                writeLocalFile("test", "may");
-                readLocalFile("test");
+//                writeLocalFile("test", "may");
+                readLocalFile("user-info");
                 try {
                     attemptSignup();
                 }catch (InterruptedException e){
@@ -187,15 +187,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         JSONObject json_data = new JSONObject();
 //        Map<String,String> map = new HashMap<String, String>();
 //        这个只是一个实例，我是要给你们看怎么加东西
-        String username = vp.toString();
+//        String username = vp.toString();
+        String username = "may12";
+        String password = "may123";
+        String phone = "18916234567";
+        String email = "http://120.76.62.132:80/img/6_8.png";
+        String profile = "";
+        String style = "casual";
+
 //        String data = "";
         try{
-            json_data.put("username", "may33");
-            json_data.put("password", "may123");
-            json_data.put("phone", "18967223241");
-            json_data.put("email", "");
-            json_data.put("profile", "");
-            json_data.put("style", "casual");
+            json_data.put("username", username);
+            json_data.put("password", password);
+            json_data.put("phone", phone);
+            json_data.put("email", email);
+            json_data.put("profile", profile);
+            json_data.put("style", style);
             data = json_data.toString();
 //            String data = json
         }catch (JSONException e){
@@ -209,8 +216,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 //        }else{
 //            return false;
 //        }
-
-
         Thread thread = new Thread(runnable);
         thread.start();
 //            thread.join();
@@ -221,6 +226,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.76.62.132:80/") // 设置 网络请求 Url
+//                .baseUrl("http://127.0.0.1:8000/")
                 .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
                 .build();
 
@@ -228,7 +234,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final UsersPostRequest_Interface request = retrofit.create(UsersPostRequest_Interface.class);
         JSONObject object = null;
         users user = new users();
-        MediaType textType = MediaType.parse("text/plain");
+        MediaType textType = MediaType.parse("application/json");
         try {
             object = new JSONObject(data);
             user.setId(1);
@@ -247,10 +253,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             //对 发送请求 进行封装
             Call<sign> call = request.getCall(user);
-            sign result_sign = call.execute().body();
-            String result = result_sign.getDataString();
-            System.out.println("request call");
-            return result;
+            Response<sign> response = call.execute();
+            sign result_sign = response.body();
+            if(result_sign != null){
+                String result = result_sign.getDataString();
+                writeLocalFile("user-info", result);
+                System.out.println("request call");
+                return "ok";
+            }else{
+                if(response.errorBody() != null){
+                    return response.errorBody().string();
+                }
+                return "error";
+            }
 //            new Thread(){call.execute().body();}.start();
 
 
@@ -289,6 +304,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return "error";
         }catch (IOException e){
             e.printStackTrace();
+            return "error";
         }
 //        String username="xue";
 //        String password="xue123456";
@@ -298,16 +314,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 //        RequestBody match = RequestBody.create(textType, "1");
 //        RequestBody name = RequestBody.create("text","11");
 //        RequestBody age = RequestBody.create(MediaType.parse("text"), "24");
-
-
-        return "ok";
+//        return "ok";
     }
 
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
             try{
-//                String data = "";
                 String result = request();
                 Message msg = new Message();
                 Bundle bundle = new Bundle();
@@ -327,14 +340,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             super.handleMessage(msg);
             Bundle data = msg.getData();
             String result = data.getString("result");
-            if(result != "ok"){
+            System.out.println("result: "+result);
+            if(result == "ok"){
+                Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }else if(result == "error" || result == ""){
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "注册失败，请检测网络是否正常", Toast.LENGTH_SHORT);
                 toast.show();
             }else{
-                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        result, Toast.LENGTH_SHORT);
+                toast.show();
             }
 //            tv_request_result.setText(result);
         }
