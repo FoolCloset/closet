@@ -1,6 +1,5 @@
 package com.example.q.myapplication.HttpUtils;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Header;
@@ -13,9 +12,4 @@ public interface PostRequest_Interface {
     @Multipart
     Call<Collections> getCollectionsCall(@Header("Authorization") String authorization,
                                   @Part("user") RequestBody name, @Part("match") RequestBody age);
-
-    @POST("upload/")
-    @Multipart
-    Call<imageResponse>getImageResponseCall(@Part("username") RequestBody name, @Part("password")RequestBody password,
-                                            @Part MultipartBody.Part file);
 }
